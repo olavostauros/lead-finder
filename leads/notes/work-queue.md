@@ -30,14 +30,14 @@ Entry shape:
 ## Entries
 
 ## Scaffold the client app with OSM search
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-09 by olavostauros
 - scope: a static TypeScript app under `src/` (Vite + Leaflet, OSM tiles), pt-BR UI. Pick an area by Nominatim place search or by drawing a rectangle on the map, enter a business term, query Overpass for POIs in the area, and show name / phone / address in a table and as pins, with OSM attribution. Put the provider behind `search(area, query) → Lead[]`. Out of scope: Google Places, CSV export, accounts. Follow `../AGENTS.md` (the project brief).
-- branch:
-- pr:
+- branch: `atlas/scaffold-osm-search` (`08930d8`) — base `main` (`3e6d0f8`)
+- pr: https://github.com/olavostauros/lead-finder/pull/1
 - review:
-- notes:
+- notes: The Vite project (package.json, index.html, configs) lives in `src/`, not the repo root, to stay inside atlas's directory; moving it to the root is the owner's call. Nominatim often ranks a point (a station, an address) above the district with the same name; point-like places are widened to ~2×2 km and same-label results collapsed. Not verified on a real touch device.
 
 ## Review the first app PR
 - state: queued
