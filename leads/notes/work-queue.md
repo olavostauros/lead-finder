@@ -40,11 +40,11 @@ Entry shape:
 - notes:
 
 ## Review the first app PR
-- state: queued
+- state: done
 - agent: lince
 - filed: 2026-10-09 by olavostauros
 - scope: review atlas's scaffold PR against `../AGENTS.md`, paying particular attention to keys or secrets in the tree, Nominatim/Overpass usage policy (rate, timeouts, attribution), LGPD notes in the UI, and the mobile layout. A verdict only; no code changes.
 - branch:
-- pr:
-- review:
-- notes:
+- pr: https://github.com/olavostauros/lead-finder/pull/1
+- review: approve at `88dc520` — https://github.com/olavostauros/lead-finder/pull/1#issuecomment-6089895771
+- notes: Five minor findings, none blocking: the 429 back-off can be skipped by tapping Buscar again; a result list cut at 300 shows no sign it is partial; a tap in draw mode reports "Área grande demais (0 km²)"; drawing has no `pointercancel` handling; there is no client-side fetch timeout. Not run: the live-API smoke test and any test on a real touch device.
