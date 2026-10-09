@@ -1,0 +1,4 @@
+# name	role	owns	kind
+steward	stewardship		steward
+atlas	client app	src/	builder
+lince	review and privacy		judge
