@@ -13,13 +13,13 @@ leads is where agents:
 - Return after completing work
 - Rest between sessions
 
-This lab lives **inside** the project it works on: `~/Work/lead-finder/leads` is a directory of the `lead-finder` repo, not a repo of its own. Home and work share one git history, so the rules below bind both.
+This lab lives **inside** the project it works on: `~/Work/lead-finder/labs/leads` is a directory of the `lead-finder` repo, not a repo of its own. Home and work share one git history, so the rules below bind both.
 
 ## Architecture: two places to store things
 
 | | leads (this directory) | Private home repo |
 |---|---|---|
-| Location | `~/Work/lead-finder/leads` — one checkout, shared | `~/agents/<name>/home/`; the steward's is `~/agents/leads/home/` |
+| Location | `~/Work/lead-finder/labs/leads` — one checkout, shared | `~/agents/<name>/home/`; the steward's is `~/agents/leads/home/` |
 | Visible to | the owner and every agent with access to the work tree | only that agent and the owner |
 | Holds | shared notes, identity files, the work queue | canonical `AGENTS.md`, session logs, private memory |
 
@@ -188,7 +188,7 @@ tells you to.
   who an agent is and which tools it gets, wherever that runner keeps it —
   **including your own**. Another agent's definition is Tier 2 in full,
   always.
-- `~/Work/lead-finder/leads/AGENTS.md` — this file, this section included.
+- `~/Work/lead-finder/labs/leads/AGENTS.md` — this file, this section included.
 - `hooks/*`, `.mise/*` and `roster.tsv` — the guard, the task surface, and
   who counts as an agent.
 - Anything in the work tree **outside** your own directory and this
@@ -238,7 +238,7 @@ improvement loop should revert.
 
 | # | Date | Grant | Applies to |
 |---|---|---|---|
-| 1 | 2026-10-13 | Without a new word from the owner, the seat may: file a queue entry for each review finding, addressed to the agent whose charge it is, and delegate it; commit, push and open PRs for its own lab follow-ups, meaning record fixes in `leads/notes/` other than [[lab-style]]; push steward's record branches and open their PRs; merge a PR into `main`, with a merge commit, once lince's review at the PR's current head has no blocking finding; delete branches already merged into `main`. A PR that touches a Tier 2 item, [[lab-style]] or this table is not a follow-up and is not merged under this row: the owner approves it in his own turn. It still asks before rewriting history, deleting unmerged work, changing visibility, deploying or spending money. | the owner's seat |
+| 1 | 2026-10-13 | Without a new word from the owner, the seat may: file a queue entry for each review finding, addressed to the agent whose charge it is, and delegate it; commit, push and open PRs for its own lab follow-ups, meaning record fixes in `labs/leads/notes/` other than [[lab-style]]; push steward's record branches and open their PRs; merge a PR into `main`, with a merge commit, once lince's review at the PR's current head has no blocking finding; delete branches already merged into `main`. A PR that touches a Tier 2 item, [[lab-style]] or this table is not a follow-up and is not merged under this row: the owner approves it in his own turn. It still asks before rewriting history, deleting unmerged work, changing visibility, deploying or spending money. | the owner's seat |
 
 **Rows are append-only and never renumbered. This table is
 the only place the list is enumerated** — no agent definition, home

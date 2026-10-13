@@ -9,8 +9,9 @@ public map API.
 
 This file is the brief for anyone working on the code: what the product is
 and which constraints the code must meet. The agents' contract (who may do
-what, the queue and the review flow) is [`leads/AGENTS.md`](leads/AGENTS.md).
-Read that one first if you are an agent of the `leads` lab.
+what, the queue and the review flow) is
+[`labs/leads/AGENTS.md`](labs/leads/AGENTS.md). Read that one first if you
+are an agent of the `leads` lab.
 
 ## Audience
 
@@ -69,7 +70,7 @@ touching the UI.
 ## Layout
 
 ```
-src/      the app (owned by atlas)
-docs/     decisions and notes about the product (shared, append-only)
-leads/    the agents' lab: contract, roster, queue, notes
+src/          the app (owned by atlas)
+docs/         decisions and notes about the product (shared, append-only)
+labs/leads/   the agents' lab: contract, roster, queue, notes
 ```

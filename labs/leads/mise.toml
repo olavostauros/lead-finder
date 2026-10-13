@@ -2,7 +2,7 @@
 LAB_NAME = "leads"
 LAB_PROJECT = "lead-finder"
 LAB_DIR = "{{ config_root }}"
-WORK_DIR = "{{ config_root }}/.."
+WORK_DIR = "{{ config_root }}/../.."
 LAB_AUTHOR_DOMAIN = "leads.invalid"
 
 [settings]

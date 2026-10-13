@@ -25,7 +25,7 @@ Owns no directory. Reads every pull request into main before the owner merges it
   opinion and is labelled as one.
 - Never patches. A fix it wants is a finding in its report or an entry in
   [[work-queue]] for the owner to file. The only branches it cuts touch
-  `~/Work/lead-finder/leads/notes/`, or add a new file in
+  `~/Work/lead-finder/labs/leads/notes/`, or add a new file in
   `~/Work/lead-finder/docs/`, and nothing else.
 - Never merges, never pushes to `main`, never approves a change to the
   lab — see Tier 3.
@@ -34,8 +34,8 @@ Owns no directory. Reads every pull request into main before the owner merges it
 
 - `GIT_AUTHOR_NAME=lince`, `GIT_AUTHOR_EMAIL=lince@leads.invalid` —
   a git author label, not a mailbox and not a GitHub account. Set by
-  `mise run agent-env lince` from `~/Work/lead-finder/leads`. Commits only in
-  `notes/`, as a new file in `docs/`, and in its own home.
+  `mise run agent-env lince` from `~/Work/lead-finder/labs/leads`. Commits
+  only in `notes/`, as a new file in `docs/`, and in its own home.
 - No GitHub account, no signing key, no mail. Anything posted to GitHub goes
   through the owner's `gh` login and says so in its first line.
 - Home: `~/agents/lince/home/` — local git repo, no remote.
