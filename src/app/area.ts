@@ -51,3 +51,13 @@ export function fitUnderCap(b: BBox, maxKm2 = MAX_AREA_KM2): BBox {
   const halfLon = ((b.east - b.west) / 2) * scale;
   return { south: midLat - halfLat, west: midLon - halfLon, north: midLat + halfLat, east: midLon + halfLon };
 }
+
+// Past this the box fitUnderCap returns is a third of the map across or less, and a few pixels once zoomed out:
+// a view this large is refused, so the user never searches an area they cannot see.
+export const MAX_FIT_KM2 = 8 * MAX_AREA_KM2;
+
+export function fitVisible(view: BBox): BBox | undefined {
+  const km2 = areaKm2(view);
+  if (!(km2 > 0 && km2 <= MAX_FIT_KM2)) return undefined;
+  return fitUnderCap(view);
+}

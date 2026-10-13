@@ -1,7 +1,7 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
-import { areaKm2, checkArea, fitUnderCap, formatKm2, MAX_AREA_KM2 } from "./area";
+import { areaKm2, checkArea, fitVisible, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
 import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
@@ -21,6 +21,9 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: '© <a href="https://www.openstreetmap.org/copyright">colaboradores do OpenStreetMap</a>',
 }).addTo(map);
 map.attributionControl.setPrefix(false);
+
+// Clears the zoom control and the attribution, which sit in the map's corners.
+const FIT_PADDING_PX = 48;
 
 const areaLayer = L.layerGroup().addTo(map);
 const pinLayer = L.layerGroup().addTo(map);
@@ -236,13 +239,21 @@ $("draw").addEventListener("click", () => (stopDrawing ? stopDrawing() : startDr
 $("use-view").addEventListener("click", () => {
   stopDrawing?.();
   const view = toBBox(map.getBounds());
-  const fitted = fitUnderCap(view);
-  if (fitted === view) setArea(view, "visível no mapa");
-  else
-    setArea(
-      fitted,
-      "centro do mapa",
-      `A área visível tem ${formatKm2(areaKm2(view))} e passa do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
+  const fitted = fitVisible(view);
+  if (!fitted || fitted === view) return void setArea(view, "visível no mapa");
+  const fittedOk = setArea(
+    fitted,
+    "centro do mapa",
+    `A área visível tem ${formatKm2(areaKm2(view))} e passa do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
+  );
+  // A fitted box can fill the map to its edge, where it reads as the map's border and the controls cover its corners.
+  if (fittedOk)
+    map.fitBounds(
+      [
+        [fitted.south, fitted.west],
+        [fitted.north, fitted.east],
+      ],
+      { padding: [FIT_PADDING_PX, FIT_PADDING_PX], maxZoom: map.getZoom() },
     );
 });
 

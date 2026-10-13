@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_AREA_KM2, areaKm2, checkArea, fitUnderCap, formatKm2 } from "./area";
+import { MAX_AREA_KM2, MAX_FIT_KM2, areaKm2, checkArea, fitUnderCap, fitVisible, formatKm2 } from "./area";
 
 const small = { south: -23.56, west: -46.66, north: -23.55, east: -46.65 };
 
@@ -90,5 +90,39 @@ describe("fitUnderCap", () => {
   it("leaves a degenerate box for checkArea to refuse", () => {
     const flat = { south: 1, west: 1, north: 1, east: 2 };
     expect(fitUnderCap(flat)).toBe(flat);
+  });
+});
+
+describe("fitVisible", () => {
+  // A square view of the given size over São Paulo. On a 390 px phone the view is about 51 km² at zoom 13, 204 at 12, 816 at 11.
+  const at = (km2: number) => {
+    const side = Math.sqrt(km2 / areaKm2({ south: -23.6, west: -46.7, north: -23.5, east: -46.6 })) * 0.1;
+    return { south: -23.55 - side / 2, west: -46.65 - side / 2, north: -23.55 + side / 2, east: -46.65 + side / 2 };
+  };
+
+  it("returns a view under the cap unchanged", () => {
+    const view = at(40);
+    expect(fitVisible(view)).toBe(view);
+  });
+
+  it("fits a view a little over the cap", () => {
+    const fitted = fitVisible(at(51));
+    expect(fitted && checkArea(fitted).ok).toBe(true);
+  });
+
+  it("fits a view one zoom level out, where the box is still half the map across", () => {
+    const fitted = fitVisible(at(204));
+    expect(fitted && checkArea(fitted).ok).toBe(true);
+  });
+
+  it("refuses a view so far over the cap that the fitted box would be too small to see", () => {
+    expect(MAX_FIT_KM2).toBeGreaterThan(4 * 51);
+    expect(fitVisible(at(MAX_FIT_KM2 * 1.01))).toBeUndefined();
+    expect(fitVisible(at(816))).toBeUndefined();
+    expect(fitVisible({ south: -34, west: -74, north: 5, east: -34 })).toBeUndefined();
+  });
+
+  it("refuses a degenerate view", () => {
+    expect(fitVisible({ south: 1, west: 1, north: 1, east: Number.NaN })).toBeUndefined();
   });
 });
