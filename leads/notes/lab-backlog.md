@@ -3,7 +3,7 @@ title: lab-backlog
 tags: [backlog, tier-2]
 related: [work-queue]
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 ---
 
 # Lab backlog
@@ -25,6 +25,26 @@ Entry shape:
 
 ## Proposed
 
+### Agent commits are unsigned: agent-env disables commit and tag signing
+- filed: 2026-10-13 by steward
+- why: before PR #3, the global git config had `commit.gpgsign=true` and `agent-env` set the author only, so every agent commit was signed with the owner's key, which `~/Work/AGENTS.md` forbids. In lead-finder, every atlas and lince commit up to then shows `%G?` = `G`, signed with the owner's key: `e86cca8`, `08930d8`, `88dc520`, `b3cd625`, `0c9836a`, `6c62b26`. In lince's home `~/agents/lince/home`, two commits are signed `G` with the same key, because they were made before #3 merged: `57124d1` (2026-10-09 18:54 -03, "docs: review of lead-finder PR #1 at 88dc520") and `daa3c09` (2026-10-13 08:22:48 -03, 28 s before the merge, "report: third review of PR #3 at bd871c5"). Every lince home commit between them is `N`. steward's reconcile on `steward/reconcile-queue` stayed staged, uncommitted, until the change merged.
+- diff, as shipped in PR #3: `leads/.mise/tasks/agent-env` emits shell that appends `commit.gpgsign=false` and `tag.gpgsign=false` at index `${GIT_CONFIG_COUNT:-0}` and raises `GIT_CONFIG_COUNT` by 2, so `GIT_CONFIG_*` already in the shell are kept. `leads/test/agent_env.bats` test 3 points `HOME`, `XDG_CONFIG_HOME` and `GIT_CONFIG_GLOBAL` at its temp dir, sets `commit.gpgsign`, `tag.gpgsign` true and `gpg.program=false` there, checks that a control commit fails, then evals `agent-env`, commits and checks `%G?` = `N` and an annotated tag `t1` with no PGP block. Test 4 checks that a `GIT_CONFIG_*` already in the shell survives. `welcome`, the lab README and the Tooling paragraph of `leads/AGENTS.md` say the same.
+- needs: nothing for the change. The owner decides whether the commits signed with his key before the change stay as they are or are amended: the six in lead-finder are on `main`, the two in lince's home are local. lince's opinion on PR #3 (comment 6144316892) was to leave the merged ones.
+- status: applied. PR #3 (`owner/unsigned-agent-commits` (`bd871c5`)) merged by olavostauros on 2026-10-13 08:23 -03 as `5dfa292`; its commits `10183dc`, `17ffa15`, `bd871c5` are the owner's, unsigned (`%G?` = `N`). lince's reviews are the PR #3 comments 6144316892 (request changes at `10183dc`), 6144386194 (request changes at `17ffa15`: the test wrote the owner's global git config, finding A) and 6144431576 (no blocking findings at `bd871c5`, one low finding B, filed below). Those verdicts are advice; GitHub shows no review approval on #3, and the owner's approval is visible only as his merge. Checked by steward on `main` (`3c1e9b3`) on 2026-10-13: after `agent-env steward`, `git config --get commit.gpgsign` is `false` from the command line, and this entry was committed unsigned.
+
+### Test 3 of agent_env.bats isolates git config but not the repository
+- filed: 2026-10-13 by steward, from lince's low finding B on PR #3 (comment 6144431576)
+- why: test 3 ("agent-env turns off commit and tag signing") runs `git -C "$repo" commit` and `git -C "$repo" tag`, and an exported `GIT_DIR` overrides `-C`. lince reproduced it: with `GIT_DIR` pointing at a sandbox repo, the test passed and the sandbox repo gained a `signed-off` commit and a tag `t1`. A git hook exports `GIT_DIR` and `GIT_INDEX_FILE`, so if the suite ever ran from a hook (or under `git rebase --exec`), it would put an unsigned commit and a tag `t1` into lead-finder. Nothing does that today: checked by steward on 2026-10-13, the only hook is `.git/hooks/pre-commit` → `leads/hooks/agent-identity`, which does not run the suite, and there is no CI.
+- diff: in `leads/test/agent_env.bats`, test 3, extend the existing `unset`:
+  ```
+  -  unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0 GIT_CONFIG_KEY_1 GIT_CONFIG_VALUE_1
+  +  unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0 GIT_CONFIG_KEY_1 GIT_CONFIG_VALUE_1 \
+  +    GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR
+  ```
+- needs: nothing; applied.
+- status: applied. PR #7 (`owner/lab-followups` (`debced0`)) merged by olavostauros on 2026-10-13 08:34 -03 as `ec4ea69`; `debced0` is the owner's, unsigned. It ships the four names as a second `unset` line rather than a continuation, same effect. lince's review: no blocking findings at `debced0` (comment 6144581754), with the `GIT_DIR` reproduction repeated: nothing written to the sandbox repo.
+- open nit (lince, PR #7): `GIT_OBJECT_DIRECTORY` is not unset either. It matters only under a server-side quarantine, so no entry; if the owner wants it, the diff is `-  unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR` / `+  unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR GIT_OBJECT_DIRECTORY` in test 3.
+
 ### Make new files in docs/ free (Tier 1) for every agent
 - filed: 2026-10-13 by atlas
 - why: on 2026-10-13 the owner asked for a `docs/` directory for decisions and notes and chose "shared, append-only" ownership in the session. `docs/` is outside every agent's directory, so today any write there is Tier 2. Recorded as `docs/decisions/0001-record-decisions-in-docs.md`.
@@ -44,9 +64,25 @@ Entry shape:
   docs/     decisions and notes about the product (shared, append-only)
   ```
 - needs: the owner applies the three edits in their own turn. Until then, agents add `docs/` files only through a PR the owner merges.
+- status: awaiting the owner. Checked by steward on 2026-10-13, last on `main` at `477ae5e`: this entry reached `main` through PR #2 (`0c12083`), but none of the three edits is in `leads/AGENTS.md` or the project brief. Merging the PR that carried the entry is not approval of it.
 
 ### Name the owner's seat in the contract and give it a loop
 - filed: 2026-10-13 by olavostauros
 - why: "Who are you?" made the session the owner types into ask which agent it was. On 2026-10-13 the owner ran the loop by hand (orient, file, delegate, chain, relay) and asked in his own turn for it to be taught to the contract and the agents.
-- diff: PR #4 (`owner/session-loop`): split the unset-identity case in "Who are you?"; add "The owner's seat" (authority) to `leads/AGENTS.md` with a Read-first row; add the loop to `notes/lab-style.md`.
-- needs: the owner merges PR #4.
+- diff: PR #4 (`owner/session-loop`): split the unset-identity case in "Who are you?"; add "The owner's seat" (authority) to `leads/AGENTS.md` with a Read-first row; add the loop to `notes/lab-style.md`; make lince's review of every builder PR into `main` a standing filing (`leads/AGENTS.md`, `notes/lince.md`, lince's home step 4). The last item was added by steward on 2026-10-13 from what merged, per lince's nit D (comment 6144439039).
+- needs: nothing; applied.
+- status: applied. PR #4 (`owner/session-loop` (`04c56a0`)) merged by olavostauros on 2026-10-13 08:24 -03 as `3c1e9b3`; its commits `6d0fb4e`, `fcd1fc9`, `04c56a0` are the owner's, unsigned. lince's reviews are the PR #4 comments 6144348695 (request changes at `6d0fb4e`), 6144400771 (no blocking findings at `fcd1fc9`) and 6144439039 (no blocking findings at `04c56a0`). Minor finding C from the last one (the standing filing said "builder's" PR while lince's charge is every PR into `main`) is applied by PR #7 (`debced0`, merged as `ec4ea69`): `leads/AGENTS.md`, `notes/lince.md` and [[lab-style]] now say "every pull request into `main`", the first adding "the owner's and steward's included". Still undefined: "builder" elsewhere, filed below.
+
+### Say who "builders" are, or stop using the word
+- filed: 2026-10-13 by steward, from lince's nit on PR #7 (comment 6144581754)
+- why: PR #7 took "builder" out of the standing filing, but the contract still uses it undefined: `leads/AGENTS.md:43` ("Builders work on topic branches…"), `:288` ("Whether the builders and judges get accounts…") and `leads/README.md:15`. The roster has no such role; lince, which owns no directory, cuts branches too.
+- diff:
+  ```
+  leads/AGENTS.md:43   - Builders work on topic branches and open pull requests into `main`. None
+                       + Agents work on topic branches and open pull requests into `main`. None
+  leads/AGENTS.md:288  - credentials and says so in the PR body. Whether the builders and judges
+                       + credentials and says so in the PR body. Whether the agents other than steward
+  leads/README.md:15   - Builders work on `<name>/<topic>` branches and open pull requests into
+                       + Agents work on `<name>/<topic>` branches and open pull requests into
+  ```
+- needs: the owner applies it, or defines "builder" instead. Nit, not blocking.
