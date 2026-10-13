@@ -76,7 +76,7 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 
 ## Agent commits are unsigned (owner change)
 - state: done
-- agent: olavostauros (owner branch; no agent entry was filed)
+- agent: olavostauros
 - filed: 2026-10-13 by steward (record; not filed). The owner's change for the [[lab-backlog]] entry "Agent commits are unsigned".
 - scope: `agent-env` turns off commit and tag signing for agent shells, with a bats test; `welcome`, the lab README and `leads/AGENTS.md` updated to match.
 - branch: `owner/unsigned-agent-commits` (`bd871c5`) — base `main` (`0c12083`)
@@ -87,7 +87,7 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 
 ## Teach the contract the owner's session loop (owner change)
 - state: done
-- agent: olavostauros (owner branch; no agent entry was filed)
+- agent: olavostauros
 - filed: 2026-10-13 by steward (record; not filed). The owner's change for the [[lab-backlog]] entry "Name the owner's seat in the contract and give it a loop".
 - scope: "Who are you?" split, "The owner's seat" in `leads/AGENTS.md`, the seat's loop in [[lab-style]], and lince's standing review filing (`leads/AGENTS.md`, `notes/lince.md`).
 - branch: `owner/session-loop` (`04c56a0`) — base `main` (`0c12083`)
@@ -129,7 +129,7 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 
 ## Close lince's findings B on #3 and C on #4 (owner change)
 - state: done
-- agent: olavostauros (owner branch; no agent entry was filed)
+- agent: olavostauros
 - filed: 2026-10-13 by steward (record; not filed). The owner's change for the [[lab-backlog]] entry "Test 3 of agent_env.bats isolates git config but not the repository" and for lince's finding C on #4.
 - scope: test 3 of `leads/test/agent_env.bats` also unsets `GIT_DIR`, `GIT_WORK_TREE`, `GIT_INDEX_FILE` and `GIT_COMMON_DIR` (B); the standing review covers every pull request into `main`, the owner's and steward's included, in `leads/AGENTS.md`, `notes/lince.md` and [[lab-style]] (C).
 - branch: `owner/lab-followups` (`debced0`) — base `main` (`3c1e9b3`)
@@ -182,14 +182,15 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: Commits `0ddce0a` and `84fae17` are the owner's, unsigned. First round: A (steward's contract lacked the duty) and B (a PR closed unmerged dropped out of the record) were blocking; both closed in `84fae17`. C (the four `lince/review-pr*` record branches) closes when PR #10 merges with their content folded in; then the owner may drop them. Second round: D (which verdict to record on a multi-round PR) is applied by PR #11 (`727dc57`): `notes/steward.md` and steward's home step 2 (`e137c4d`) now say the latest verdict first. E (no shape for a record-only entry) is closed by the record-entry shape in this note's header, added on `steward/reconcile-queue`. Nit, not acted on: steward's home step 1 lists only the last 50 PRs.
 
 ## Reconcile the queue and backlog after the merges (steward)
-- state: pr-open
+- state: done
 - agent: steward
 - filed: 2026-10-13 by steward (record; not filed)
 - scope: carry #1–#11 into this queue, each PR with lince's latest verdict first; fold in lince's `lince/review-pr{1,5,6,7}` branches; keep [[lab-backlog]] true against `main`. Only `leads/notes/`.
 - branch: `steward/reconcile-queue` (`6c6d67f` as first reviewed) — base `main` (`0c12083`), rebased onto `477ae5e` before it was pushed, then `main` (`9afbdcf`) merged in as `8c3f68e` after #6, #8, #9 and #11
 - pr: https://github.com/olavostauros/lead-finder/pull/10
-- review: request changes at `6c6d67f` (latest) by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/10#issuecomment-6144781468
-- notes: lince's findings at `6c6d67f`: A (no entry for #8), B (the #7 entry said #8 is open), C (`:288`, #6's head and state, the docs/ SHA were stale), F (`b3cd625` is not on `main`), and D and E from #8 (latest verdict first; a record-entry shape). All six are addressed in the commit after the merge `8c3f68e`; a re-review is pending. The PR is pushed by the owner's seat; steward pushes nothing.
+- merged: 2026-10-13 09:10 -03 by olavostauros, merge commit `f08b439`, head `54eb4b7`
+- review: no blocking findings at `54eb4b7` (latest) by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/10#issuecomment-6145222118. Earlier: request changes at `6c6d67f` — https://github.com/olavostauros/lead-finder/pull/10#issuecomment-6144781468. No GitHub review approval.
+- notes: lince's findings at `6c6d67f`: A (no entry for #8), B (the #7 entry said #8 is open), C (`:288`, #6's head and state, the docs/ SHA were stale), F (`b3cd625` is not on `main`), and D and E from #8 (latest verdict first; a record-entry shape). All six are addressed in `54eb4b7`, after the merge `8c3f68e`; lince's second round found them closed. Its three nits: the PR body was the first round's (it is the merge record and stays as it is); the record entries used two `agent:` forms (now one, `olavostauros`, on `steward/sweep-12-14`); the line numbers in the "Standing permission" backlog entry would shift once C was applied (both applied by #13; the diffs carried their own text). The `(owner change)` record entries for #3, #4 and #7 said `olavostauros (owner branch; no agent entry was filed)`; the `filed:` line already says that. The PR was pushed by the owner's seat; steward pushes nothing.
 
 ## Define builders by the roster's kind; record the latest verdict (owner change)
 - state: done
@@ -203,21 +204,54 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: Commits `81ec32e` and `727dc57` are the owner's, unsigned. First round: A ("Agents … open pull requests into `main`" was false for steward and lince) and B (the roster already defined "builder" in its `kind` column) are closed in `727dc57`. Second round, none blocking, filed in [[lab-backlog]]: C (`AGENTS.md:44`, "the owner's seat pushes them", reads as a standing duty), D (`AGENTS.md:241-242` still grants every agent "push the branch, open the PR"), and the nits (two lines over 80 columns; README's "pushes only a review"). The PR body still says the contract "now says 'agents'"; it is the merge record and stays as it is.
 
 ## Make "Usar área visível" work at the default zoom on a phone
-- state: queued
+- state: done
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's observation outside PR #6, in its second review (https://github.com/olavostauros/lead-finder/pull/6#issuecomment-6144906367): at the default zoom (13) on a 390 px-wide phone, "Usar área visível" gives "Área grande demais (51 km²)", so a phone user's first tap on it fails until they zoom in. It comes from the initial view and the area cap, not from drawing. Make the first tap work on a phone, for example by a narrower initial view on small screens, without raising the cap. Out of scope: the cap's value, draw mode.
+- branch: `atlas/visible-area` (`c183601`, head `a87473c`) — base `main` (`9afbdcf`); `main` (`2cf6612`, after #13 and #14) merged in as `33146ba`
+- pr: https://github.com/olavostauros/lead-finder/pull/12
+- merged: 2026-10-13 09:25 -03 by olavostauros, merge commit `2b08b13`, head `a87473c`
+- review: no blocking findings at `50e3bc7` (latest) by lince — https://github.com/olavostauros/lead-finder/pull/12#issuecomment-6145433731. Earlier: request changes at `c183601` — https://github.com/olavostauros/lead-finder/pull/12#issuecomment-6145234354; A and B addressed in `50e3bc7`. Head `a87473c` merged after `main` was merged in (`33146ba`) and low finding C was reworded (`a87473c`), with no further review.
+- notes: (steward, 2026-10-13, from the PR and lince's comments; atlas left this entry alone.) The fix is not a narrower initial view: the visible area depends on the screen, so "Usar área visível" fits a view over the 50 km² cap to the largest box with the same centre and proportions under it (`fitUnderCap`), only up to `MAX_FIT_KM2` = 8 × the cap, 400 km² (`fitVisible`); a larger view is refused as before. The map then moves to the box with `fitBounds` (48 px padding, never zooming in). The cap is unchanged. First round: A (medium, blocking: zoomed out, the fitted box was a few pixels or none, and the message pointed at a rectangle that was not there) and B (low: at 390 px the box read as the map's border); both closed in `50e3bc7`. Second round: C (low: after a fit that zooms out, "A área visível tem 51 km²" named the view that was replaced); `a87473c` puts it in the past ("A área que estava visível tinha…"), not reviewed by lince. Gates at `50e3bc7` (lince): 94 tests three times, typecheck, build, lab `mise run test`, diff check, headless Chromium at 390, 1280 and 1920 px with outside hosts blocked; not run: a real phone, Safari, live servers. Open question for the owner, not an entry: the 8× threshold refuses zoom 12 at 1280 px (504,3 km²), where lince measured a fitted box of 270×152 px at `c183601`; the owner's seat accepted 8× as a product choice, per lince's second round, and atlas says raising it is a one-line change.
+
+## Keep a search's outcome when draw mode ends
+- state: done
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (in the session)
+- scope: lince's finding B in its second review of PR #9 (https://github.com/olavostauros/lead-finder/pull/9#issuecomment-6145058949). Draw mode and the search share `#status`: while draw mode is open, search events overwrite the draw hint, and `stop()` writes `""` once the runner is no longer busy, so an outcome that arrived during drawing is erased. Recorded: a search ran through four 429s in draw mode, the status became "O servidor do OpenStreetMap está ocupado. Tente de novo em alguns minutos.", and Escape blanked it; "Busca cancelada." disappears the same way. Keep the search's last message, outcome included, and restore it on leaving draw mode, or give draw mode its own hint element. Out of scope: the search's own logic.
+- branch: `atlas/draw-status` (`010089a`, head `0f1103b`) — base `main` (`38b9dcb`)
+- pr: https://github.com/olavostauros/lead-finder/pull/14
+- merged: 2026-10-13 09:22 -03 by olavostauros, merge commit `2cf6612`, head `0f1103b`
+- review: no blocking findings at `0f1103b` by lince — https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353
+- notes: Draw mode got its own `#draw-hint` line, so `#status` is never written by draw mode and nothing restores it. Browser check at 390 px with a mocked 429: the outcome was blank after Escape on `main` and stays on this branch; "Busca cancelada." the same. No unit test: no DOM test environment in `src/`. Conflicts with #12 in `src/app/main.ts` and this file. (steward, 2026-10-13:) lince checked finding B closed in the diff and in headless Chromium at 320 and 390 px against `main` (`38b9dcb`), a place-search error included. One new low finding C, introduced here: a status written before an area change outlives it; filed as an entry below. Lince's opinion on a mid-stroke layout shift, already on `main`, is filed as an entry below too. Lince's other opinion, not verified with a screen reader and not an entry: `drawHint` sets the text and unhides `#draw-hint` in the same task (`main.ts:39-40`), so some screen readers may not announce the first hint of a draw session, which on `main` went into the always-present `#status`; unhiding before writing the text would keep it announced. #12 merged after this; git merged them without conflicts.
+
+## Say who pushes, and only on whose word (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed). The owner's change for the three [[lab-backlog]] entries from lince's second review of #11.
+- scope: `leads/AGENTS.md`: steward pushes nothing, its branches stay local until the owner has the seat push one or discards it; the standing permission is branch and commit, a builder also pushes and opens the PR; the Tooling line wrapped. `leads/README.md`: wrapped, and lince "pushes a branch only to record a review that has no PR".
+- branch: `owner/push-rules` (`2211d33`) — base `main` (`f08b439`)
+- pr: https://github.com/olavostauros/lead-finder/pull/13
+- merged: 2026-10-13 09:12 -03 by olavostauros, merge commit `38b9dcb`, head `2211d33`
+- review: no blocking findings at `2211d33` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/13#issuecomment-6145261903. No GitHub review approval.
+- notes: `2211d33` is the owner's, unsigned. Lince found each hunk identical to its backlog entry's diff, no line still granting steward a push, and no changed line over 80 columns. Finding A (low): lince's home step 6 still let lince open a PR for a record branch "if the owner asks", which the contract no longer grants. Applied in lince's home as `671f897` (the owner's, unsigned, 2026-10-13 09:12 -03): step 6 now says "Push the branch; open no PR for it (the contract gives PRs to builders only)". Checked by steward in `~/agents/lince/home/AGENTS.md`; lince's home is private, so this is the only record of it here.
+
+## Clear stale status when the area changes
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (in the session)
+- scope: lince's finding C on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353). A message written to `#status` before an area change stays after an area is drawn or picked: press Buscar with no area, get the red "Escolha uma área primeiro.", draw a rectangle, and the area line reads "Área: desenhada · 3,3 km²" with the red error still below. "Nenhum lugar encontrado." and a place-search error stay the same way; "Usar área visível" and a picked place already did so on `main` before #14. `setArea` should clear `#status` when it sets a new area. Lince notes this is safe for a running search: `runner.cancel("area")` writes "A área mudou…" after `setArea` returns. Out of scope: draw mode's `#draw-hint`, the search's own messages.
 - branch:
 - pr:
 - review:
 - notes:
 
-## Keep a search's outcome when draw mode ends
-- state: pr-open
+## Reserve the status line's height so the map does not move mid-stroke
+- state: queued
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
-- scope: lince's finding B in its second review of PR #9 (https://github.com/olavostauros/lead-finder/pull/9#issuecomment-6145058949). Draw mode and the search share `#status`: while draw mode is open, search events overwrite the draw hint, and `stop()` writes `""` once the runner is no longer busy, so an outcome that arrived during drawing is erased. Recorded: a search ran through four 429s in draw mode, the status became "O servidor do OpenStreetMap está ocupado. Tente de novo em alguns minutos.", and Escape blanked it; "Busca cancelada." disappears the same way. Keep the search's last message, outcome included, and restore it on leaving draw mode, or give draw mode its own hint element. Out of scope: the search's own logic.
-- branch: `atlas/draw-status` (`010089a`), base `main` (`38b9dcb`)
-- pr: https://github.com/olavostauros/lead-finder/pull/14
+- scope: lince's opinion on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353), already on `main` before #14. A search that ends during a stroke empties `#status`, its row collapses, and the map moves up 16 px under the finger; the drawn rectangle then grows 16 px, because the stroke's start is a map coordinate and its end a container point. Give `#status` a reserved one-line height so the map does not move when it empties. Out of scope: `#draw-hint` and its own layout shift when draw mode starts or after a tap, which happen outside a stroke.
+- branch:
+- pr:
 - review:
-- notes: Draw mode got its own `#draw-hint` line, so `#status` is never written by draw mode and nothing restores it. Browser check at 390 px with a mocked 429: the outcome was blank after Escape on `main` and stays on this branch; "Busca cancelada." the same. No unit test: no DOM test environment in `src/`. Conflicts with #12 in `src/app/main.ts` and this file.
+- notes:

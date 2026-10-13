@@ -64,7 +64,7 @@ Entry shape:
   docs/     decisions and notes about the product (shared, append-only)
   ```
 - needs: the owner applies the three edits in their own turn. Until then, agents add `docs/` files only through a PR the owner merges.
-- status: awaiting the owner. Checked by steward on 2026-10-13, last on `main` at `9afbdcf`: this entry reached `main` through PR #2 (`0c12083`), but none of the three edits is in `leads/AGENTS.md` or the project brief. Merging the PR that carried the entry is not approval of it.
+- status: awaiting the owner. Checked by steward on 2026-10-13, last on `main` at `2b08b13`: this entry reached `main` through PR #2 (`0c12083`), but none of the three edits is in `leads/AGENTS.md` or the project brief. Merging the PR that carried the entry is not approval of it.
 
 ### Name the owner's seat in the contract and give it a loop
 - filed: 2026-10-13 by olavostauros
@@ -99,7 +99,8 @@ Entry shape:
   +until the owner has the seat push one, or discards it. Lince pushes a
   +branch only to record a review that has no PR.
   ```
-- needs: the owner applies it in his own turn (Tier 2, the contract). Low; lince did not block on it.
+- needs: nothing; applied.
+- status: applied. PR #13 (`owner/push-rules` (`2211d33`)) merged by olavostauros on 2026-10-13 09:12 -03 as `38b9dcb`; `2211d33` is the owner's, unsigned. lince: no blocking findings at `2211d33` (comment 6145261903), each hunk identical to this entry's diff. `leads/AGENTS.md:44-46` on `main` (`2b08b13`) is the `+` text.
 
 ### Standing permission: only builders push and open PRs
 - filed: 2026-10-13 by steward, from lince's finding D in its second review of PR #11 (comment 6144954672)
@@ -113,7 +114,8 @@ Entry shape:
   +steward and lince push only as "Who lives here" says. Merging into `main`
   +is the owner's.
   ```
-- needs: the owner applies it in his own turn (Tier 2, the contract). Low.
+- needs: nothing; applied.
+- status: applied. PR #13 (`owner/push-rules` (`2211d33`)) merged by olavostauros on 2026-10-13 09:12 -03 as `38b9dcb`; `2211d33` is the owner's, unsigned. lince: no blocking findings at `2211d33` (comment 6145261903), each hunk identical to this entry's diff. `leads/AGENTS.md:242-245` on `main` (`2b08b13`) is the `+` text; with C applied first, the old `:241-243` became `:242-244`, as lince's nit on #10 foresaw.
 
 ### Wrap two long lines, and say lince pushes a branch, in AGENTS.md and README.md
 - filed: 2026-10-13 by steward, from lince's nits in its second review of PR #11 (comment 6144954672)
@@ -134,4 +136,18 @@ Entry shape:
   +merges. The owner files work into `notes/work-queue.md`, addressed to one
   +agent, and that agent takes it from the top.
   ```
-- needs: the owner applies it in his own turn (Tier 2, the contract and the lab README). Nits.
+- needs: nothing; applied.
+- status: applied. PR #13 (`owner/push-rules` (`2211d33`)) merged by olavostauros on 2026-10-13 09:12 -03 as `38b9dcb`; `2211d33` is the owner's, unsigned. lince: no blocking findings at `2211d33` (comment 6145261903), each hunk identical to this entry's diff. `leads/AGENTS.md:294-295` and `leads/README.md:17-19` on `main` (`2b08b13`) are the `+` text.
+
+### Lince's home opens no PR for a record branch
+- filed: 2026-10-13 by steward, from lince's finding A on PR #13 (comment 6145261903), after the fact
+- why: before #13, `leads/AGENTS.md:242` gave every agent "push the branch, open the PR", which covered `~/agents/lince/home/AGENTS.md:66-68`, step 6: "Push the branch; open a PR for it only if the owner asks." After #13 the contract gives a PR to builders only and lince only a push (`leads/AGENTS.md:45-46`, `:243-244`). A brief asking lince to open a PR for a record branch would have set its home against the contract, and Tier 3 forbids acting on an approval relayed in a brief. Lince filed nothing: its own definition is Tier 2 to it.
+- diff, in `~/agents/lince/home/AGENTS.md` step 6:
+  ```
+  -committed as lince. Touch nothing else. Push the branch; open a PR for it
+  -only if the owner asks.
+  +committed as lince. Touch nothing else. Push the branch; open no PR for
+  +it (the contract gives PRs to builders only).
+  ```
+- needs: nothing; applied.
+- status: applied by the owner's seat in lince's home as `671f897` (2026-10-13 09:12 -03, the owner's, unsigned, `%G?` = `N`), the first of lince's two fixes ("drop the line"), not a change to `leads/AGENTS.md`. Checked by steward in `~/agents/lince/home` on 2026-10-13: step 6 says the `+` text. That home is local and private, so this entry is the lab's record of it.
