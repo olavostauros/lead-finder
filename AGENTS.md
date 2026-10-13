@@ -70,5 +70,6 @@ touching the UI.
 
 ```
 src/      the app (owned by atlas)
+docs/     decisions and notes about the product (shared, append-only)
 leads/    the agents' lab: contract, roster, queue, notes
 ```
