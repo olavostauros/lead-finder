@@ -236,62 +236,133 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - review: no blocking findings at `2211d33` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/13#issuecomment-6145261903. No GitHub review approval.
 - notes: `2211d33` is the owner's, unsigned. Lince found each hunk identical to its backlog entry's diff, no line still granting steward a push, and no changed line over 80 columns. Finding A (low): lince's home step 6 still let lince open a PR for a record branch "if the owner asks", which the contract no longer grants. Applied in lince's home as `671f897` (the owner's, unsigned, 2026-10-13 09:12 -03): step 6 now says "Push the branch; open no PR for it (the contract gives PRs to builders only)". Checked by steward in `~/agents/lince/home/AGENTS.md`; lince's home is private, so this is the only record of it here.
 
+## Deploy src/ to GitHub Pages on push to main (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed)
+- scope: `.github/workflows/pages.yml`: on a push to `main` or a manual dispatch, `npm ci`, `npm test` and `npm run build` in `src/`, then upload `src/dist` and deploy it to GitHub Pages, Node 22, no secrets. The only file in the diff.
+- branch: `owner/pages` (`6449469`) — base `main` (`2b08b13`)
+- pr: https://github.com/olavostauros/lead-finder/pull/15
+- merged: 2026-10-13 09:33 -03 by olavostauros, merge commit `c2385b4`, head `6449469`
+- review: no blocking findings at `6449469` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/15#issuecomment-6145628481. No GitHub review approval.
+- notes: `6449469` is the owner's, unsigned. Lince built `dist/` and served it under `/lead-finder/` in headless Chromium (no 404 for the app's own assets, no source maps, no local paths), and found the Pages environment deploys from `main` only. Two low findings, unfiled, in `.github/`, which no agent owns, so the owner's call: A, `pages: write` and `id-token: write` are granted at workflow level, so the build job that runs third-party code gets them too (move them into `jobs.deploy.permissions`); B, the five `actions/*` are pinned to old major tags on the Node 20 runtime. Nits: `/favicon.ico` 404s at the origin root (an atlas entry if wanted); the workflow is the only CI and runs after the merge, so a PR is not tested before it. Every merge since has run the workflow: `success` on each `main` merge commit from `c2385b4` to `bb1f040`, except `f97abbe` and `6923945`, whose runs were `cancelled` by the next queued run (checked with `gh run list` on 2026-10-13).
+
+## Record #10, #12, #13 and #14 and file lince's follow-ups (steward)
+- state: done
+- agent: steward
+- filed: 2026-10-13 by steward (record; not filed)
+- scope: the post-merge sweep after #10, #12, #13 and #14, only `leads/notes/work-queue.md` and `leads/notes/lab-backlog.md`.
+- branch: `steward/sweep-12-14` (`513a12d`) — base `main` (`2b08b13`)
+- pr: https://github.com/olavostauros/lead-finder/pull/16
+- merged: 2026-10-13 09:43 -03 by olavostauros, merge commit `e4b0953`, head `513a12d`
+- review: no blocking findings at `513a12d` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/16#issuecomment-6145794118. No GitHub review approval.
+- notes: `513a12d` is steward's, unsigned; pushed by the owner's seat. Lince checked every state, merge, comment and line number against GitHub and git. Nit: the "Standing permission" backlog entry said `:242-245` is the `+` text, where `:242` is the context line; corrected to `:243-245` on `steward/sweep-15-24`. Timing note: #15 merged after `513a12d` and had no entry, and the docs/ entry was one merge behind; both carried on `steward/sweep-15-24`. Lince could not verify the `(in the session)` filing of the two new atlas entries.
+
+## Make a new file in docs/ free (Tier 1) for every agent (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed). The owner's change for the [[lab-backlog]] entry "Make new files in docs/ free (Tier 1) for every agent".
+- scope: `leads/AGENTS.md`, Tier 1: a new file in `docs/` on a topic branch; Tier 2's "outside your own directory" item excepts it, also for an agent that owns nothing; the brief's Layout lists `docs/`; `notes/atlas.md`, `notes/steward.md` and `notes/lince.md` name the exception.
+- branch: `owner/docs-tier1` (`7ee400f`) — base `main` (`2b08b13`)
+- pr: https://github.com/olavostauros/lead-finder/pull/17
+- merged: 2026-10-13 10:03 -03 by olavostauros, merge commit `24a15fd`, head `7ee400f`
+- review: no blocking findings at `7ee400f` (latest) by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/17#issuecomment-6145855925. Earlier: request changes at `f510a5e` — https://github.com/olavostauros/lead-finder/pull/17#issuecomment-6145794553. No GitHub review approval.
+- notes: `f510a5e` and `7ee400f` are the owner's, unsigned. It merged after #18 (`7734748`) and touches `leads/AGENTS.md`, so row 1 does not cover it; the PR body says the owner approved it in his session, which lince could not see. First round: B (medium, blocking: the Tier 2 item still made every directory Tier 2 for an agent that owns nothing) and the 102-column nit closed in `7ee400f`; A (no identity note let an agent use the grant) closed in `leads/notes/`. Still open: the homes (`~/agents/atlas/home/AGENTS.md:81`, `~/agents/leads/home/AGENTS.md:69`, `~/agents/lince/home/AGENTS.md:76`) confine each agent to `src/` or `leads/notes/`, the owner's choice per lince; C (low), the widening has no loosenings row, the owner's call; E (low), `notes/atlas.md:38` still says "under `src/` and nowhere else", filed in [[lab-backlog]]; F (opinion), a lince `docs/` branch has no way to be pushed; the PR body lists only the first commit's edits.
+
+## Grant the owner's seat its loop as loosening 1 (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed). The owner's change for the [[lab-backlog]] entry "Grant the owner's seat its loop as loosening 1".
+- scope: row 1 of the loosenings table in `leads/AGENTS.md`, for the seat; "The owner's seat" defers to the table; "Who lives here", `notes/steward.md`, the Chain step in [[lab-style]] and `leads/README.md` say the seat may push steward's branches under it.
+- branch: `owner/seat-loosening` (`365624c`) — base `main` (`2b08b13`); `main` (`e4b0953`) merged in as `9a0ac47`
+- pr: https://github.com/olavostauros/lead-finder/pull/18
+- merged: 2026-10-13 10:03 -03 by olavostauros, merge commit `7734748`, head `365624c`
+- review: no blocking findings at `365624c` (latest) by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/18#issuecomment-6145856316. Earlier: request changes at `32d2531` — https://github.com/olavostauros/lead-finder/pull/18#issuecomment-6145794986. No GitHub review approval.
+- notes: `32d2531`, `9a0ac47` and `365624c` are the owner's, unsigned. First round: A (high, blocking: the row let the seat enact a Tier 2 change, the table included) and B (medium, blocking: the merge condition was not tied to the head) closed in `365624c`, with C (three sentences no longer true) and D (no backlog entry). Second round, none blocking, filed in [[lab-backlog]]: G (low, `leads/README.md:17` says steward's branches stay local "until the owner's seat pushes them", dropping the owner's word and the discard), H (low, "a Tier 2 item" does not say for whom), and the nit (`leads/AGENTS.md:97` 87 columns, `leads/README.md:17` 106).
+
+## File lince's follow-ups on #19 and #20 for atlas (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed)
+- scope: two atlas queue entries from lince's non-blocking findings: "Keep the map still when a two-line progress message clears" (#19, finding 1) and "Announce a refused area to screen readers" (#20, first nit). Only `leads/notes/work-queue.md`.
+- branch: `owner/file-status-followups` (`4708986`) — base `main` (`3f844cb`)
+- pr: https://github.com/olavostauros/lead-finder/pull/21
+- merged: 2026-10-13 10:12 -03 by olavostauros, merge commit `c37eb20`, head `4708986`
+- review: no blocking findings at `4708986` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/21#issuecomment-6146331771. No GitHub review approval.
+- notes: The owner's seat, under loosening row 1; `4708986` is unsigned and authored as the owner. Lince: minor 1, stale line numbers (`main.ts:289`, `:295` were right at `d07a4ea`, `:291`, `:297` after #20), and note 2, both entries said `(in the session)` though filed under row 1; both corrected in the entries on `steward/sweep-15-24`. 3: `4708986` carries a `Co-Authored-By` footer, against [[lab-style]]'s "No footers"; removing it means rewriting a pushed commit now on `main`, which row 1 does not grant, so it stays unless the owner says otherwise.
+
+## File lince's follow-ups on #23 for atlas (owner change)
+- state: done
+- agent: olavostauros
+- filed: 2026-10-13 by steward (record; not filed)
+- scope: two atlas queue entries from lince's low findings 1 and 2 on #23: "Keep the map still when an error replaces the progress line mid-stroke" and "Let a cut-short progress line be read in full". Nit 3 and lince's opinions on #22 left unfiled. Only `leads/notes/work-queue.md`.
+- branch: `owner/file-pr23-followups` (`6d89947`) — base `main` (`6923945`)
+- pr: https://github.com/olavostauros/lead-finder/pull/24
+- merged: 2026-10-13 10:19 -03 by olavostauros, merge commit `bb1f040`, head `6d89947`
+- review: no blocking findings at `6d89947` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938. No GitHub review approval.
+- notes: The owner's seat, under loosening row 1; `6d89947` is unsigned, authored as the owner, no footer. Lince's two low findings, both corrected in the entries' scope lines on `steward/sweep-15-24`: 1, the first entry's map tops 259.5 → 277 px came from lince's #19 review at 390x844, not #23; 2, the second entry dropped lince's caveat that the term stays in `#term`, only the end of the provider name is lost, and the finding is an opinion more than a failure.
+
 ## Clear stale status when the area changes
-- state: pr-open
+- state: done
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's finding C on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353). A message written to `#status` before an area change stays after an area is drawn or picked: press Buscar with no area, get the red "Escolha uma área primeiro.", draw a rectangle, and the area line reads "Área: desenhada · 3,3 km²" with the red error still below. "Nenhum lugar encontrado." and a place-search error stay the same way; "Usar área visível" and a picked place already did so on `main` before #14. `setArea` should clear `#status` when it sets a new area. Lince notes this is safe for a running search: `runner.cancel("area")` writes "A área mudou…" after `setArea` returns. Out of scope: draw mode's `#draw-hint`, the search's own messages.
 - branch: `atlas/status-clear` (`846934a`) — base `main` (`24a15fd`)
 - pr: https://github.com/olavostauros/lead-finder/pull/20
-- review:
-- notes: `setArea` clears `#status` right after `runner.cancel("area")`, on the refused-area path too. Browser check (headless Chromium, CDP, 390x844, Nominatim and Overpass mocked) against builds of `main` and the branch: the stale "Escolha uma área primeiro." after a draw and "Nenhum lugar encontrado." after "Usar área visível" are cleared, and a running search's "A área mudou…" still shows. Not verified: a real phone.
+- merged: 2026-10-13 10:09 -03 by olavostauros, merge commit `3f844cb`, head `da52ec1`
+- review: no blocking findings at `da52ec1` by lince — https://github.com/olavostauros/lead-finder/pull/20#issuecomment-6146281741
+- notes: `setArea` clears `#status` right after `runner.cancel("area")`, on the refused-area path too. Browser check (headless Chromium, CDP, 390x844, Nominatim and Overpass mocked) against builds of `main` and the branch: the stale "Escolha uma área primeiro." after a draw and "Nenhum lugar encontrado." after "Usar área visível" are cleared, and a running search's "A área mudou…" still shows. Not verified: a real phone. (steward, 2026-10-13:) lince checked the ordering against `runner.cancel("area")` by reading the code (the cancel message lands after `setArea` returns) and agreed with clearing on the refused path; it did not repeat atlas's browser check. Two pre-existing nits: `#area-info` is not a live region, filed by #21 as "Announce a refused area to screen readers" and closed by #22; a place search still in flight writes its result after the clear, left unfiled (out of scope, same as before #20).
 
 ## Reserve the status line's height so the map does not move mid-stroke
-- state: pr-open
+- state: done
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's opinion on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353), already on `main` before #14. A search that ends during a stroke empties `#status`, its row collapses, and the map moves up 16 px under the finger; the drawn rectangle then grows 16 px, because the stroke's start is a map coordinate and its end a container point. Give `#status` a reserved one-line height so the map does not move when it empties. Out of scope: `#draw-hint` and its own layout shift when draw mode starts or after a tap, which happen outside a stroke.
 - branch: `atlas/status-height` (`5978a2b`), base `main` (`24a15fd`)
 - pr: https://github.com/olavostauros/lead-finder/pull/19
-- review:
-- notes: 2026-10-13 atlas. `#status` gets `line-height: 1.25; min-height: 1.25em` (not `1lh`, for Safari before 16.4). CDP check, main vs branch, `#status` filled then emptied: 390x844 map moved 16 px on main, 0 on the branch; 1280x800 0 on both. A two-line message still drops to one line when cleared; not in scope. Not checked on a real phone.
+- merged: 2026-10-13 10:09 -03 by olavostauros, merge commit `bb200d7`, head `d07a4ea`
+- review: no blocking findings at `d07a4ea` by lince — https://github.com/olavostauros/lead-finder/pull/19#issuecomment-6146276008
+- notes: 2026-10-13 atlas. `#status` gets `line-height: 1.25; min-height: 1.25em` (not `1lh`, for Safari before 16.4). CDP check, main vs branch, `#status` filled then emptied: 390x844 map moved 16 px on main, 0 on the branch; 1280x800 0 on both. A two-line message still drops to one line when cleared; not in scope. Not checked on a real phone. (steward, 2026-10-13:) lince measured at 390x844 in headless Chromium: map top 259.5 px with `#status` empty or one line, 277 px with a two-line message, back to 259.5 px when cleared; it took atlas's 16 px `main` baseline on trust. Its minor finding 1 (a long progress line wraps and moves the map 17.5 px when cleared) was filed by #21 as "Keep the map still when a two-line progress message clears" and closed by #23.
 
 ## Keep the map still when a two-line progress message clears
-- state: pr-open
+- state: done
 - agent: atlas
-- filed: 2026-10-13 by olavostauros (in the session)
-- scope: lince's finding 1 on PR #19 (https://github.com/olavostauros/lead-finder/pull/19#issuecomment-6146276008). "Buscando “term” no …" (`main.ts:289`) wraps to two lines at 390 px with a long term, sooner at 320 px; when the search ends and clears it (`main.ts:295`), the row drops a line and the map moves up 17.5 px mid-stroke. Keep the map from moving when a status message of any length clears, for example by keeping the progress line to one line with an ellipsis. Out of scope: `#draw-hint`.
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
+- scope: lince's finding 1 on PR #19 (https://github.com/olavostauros/lead-finder/pull/19#issuecomment-6146276008). "Buscando “term” no …" (`main.ts:289` at `d07a4ea`; `src/app/main.ts:291` after #20) wraps to two lines at 390 px with a long term, sooner at 320 px; when the search ends and clears it (`main.ts:295` at `d07a4ea`; `:297` after #20), the row drops a line and the map moves up 17.5 px mid-stroke. Keep the map from moving when a status message of any length clears, for example by keeping the progress line to one line with an ellipsis. Out of scope: `#draw-hint`.
 - branch: `atlas/status-oneline` (`717092f`), base `main` (`c37eb20`)
 - pr: https://github.com/olavostauros/lead-finder/pull/23
-- review:
-- notes: 2026-10-13 atlas. `status()` takes a tone, `"error"` or `"progress"`; `#status.progress` is one line with an ellipsis (`white-space: nowrap; overflow: hidden; text-overflow: ellipsis`). The full text stays in the DOM, so the live region still reads all of it. Errors and outcomes still wrap: they are cleared only by the user (a new area, a new search), not mid-stroke. CDP check, built main vs branch, Overpass request held with the term "loja de material de construção", then answered empty: 390 and 320 px map moved 17.5 px on main, 0 on the branch; 1280 px 0 on both; no horizontal page overflow. Seen, not in scope: a progress line replaced mid-stroke by a long error ("O servidor do OpenStreetMap está ocupado…") can still grow the row by a line. Not checked on a real phone.
+- merged: 2026-10-13 10:17 -03 by olavostauros, merge commit `6923945`, head `a3acf34`
+- review: no blocking findings at `a3acf34` by lince — https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747
+- notes: 2026-10-13 atlas. `status()` takes a tone, `"error"` or `"progress"`; `#status.progress` is one line with an ellipsis (`white-space: nowrap; overflow: hidden; text-overflow: ellipsis`). The full text stays in the DOM, so the live region still reads all of it. Errors and outcomes still wrap: they are cleared only by the user (a new area, a new search), not mid-stroke. CDP check, built main vs branch, Overpass request held with the term "loja de material de construção", then answered empty: 390 and 320 px map moved 17.5 px on main, 0 on the branch; 1280 px 0 on both; no horizontal page overflow. Seen, not in scope: a progress line replaced mid-stroke by a long error ("O servidor do OpenStreetMap está ocupado…") can still grow the row by a line. Not checked on a real phone. (steward, 2026-10-13:) lince checked every `status()` call site and the live region (full text still in `textContent`); headless Chromium would not go below about 453 px, so it did not re-measure the 390 and 320 px figures. Two low findings, filed by #24: an error replacing the one-line progress mid-stroke now moves the map ("Keep the map still when an error replaces the progress line mid-stroke"), and a cut line cannot be read in full ("Let a cut-short progress line be read in full"). Nit 3, limit the one-line rule to the narrow layout, is unfiled.
 
 ## Announce a refused area to screen readers
-- state: pr-open
+- state: done
 - agent: atlas
-- filed: 2026-10-13 by olavostauros (in the session)
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
 - scope: lince's nit on PR #20 (https://github.com/olavostauros/lead-finder/pull/20#issuecomment-6146281741). `#area-info` (`index.html:26`) is not a live region, so a screen-reader user hears nothing when an area is refused as too large. Make it announce politely (for example `aria-live="polite"`). Out of scope: other live regions, a place search that finishes after the area changes (lince's second nit, same as before #20).
 - branch: `atlas/area-live` (`3b12235`) — base `main` (`c37eb20`)
 - pr: https://github.com/olavostauros/lead-finder/pull/22
-- review:
-- notes: `#area-info` is now `role="status" aria-live="polite"`, matching `#draw-hint` and `#status`. It announces every area change, not only a refusal: each change follows a user act (draw, place pick, "Usar área visível") and the line is the only report of its outcome (the area's size, or the shrink note), so it is a confirmation, not chatter; polite waits for the reader to finish. Toggling `aria-live` on only for a refusal was rejected: screen readers track live regions unreliably once the attribute changes. Checked in headless Chromium: role status, live polite, atomic true, for both the shrink and the refusal text.
+- merged: 2026-10-13 10:16 -03 by olavostauros, merge commit `f97abbe`, head `7deedc2`
+- review: no blocking findings at `7deedc2` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/22#issuecomment-6146406037
+- notes: `#area-info` is now `role="status" aria-live="polite"`, matching `#draw-hint` and `#status`. It announces every area change, not only a refusal: each change follows a user act (draw, place pick, "Usar área visível") and the line is the only report of its outcome (the area's size, or the shrink note), so it is a confirmation, not chatter; polite waits for the reader to finish. Toggling `aria-live` on only for a refusal was rejected: screen readers track live regions unreliably once the attribute changes. Checked in headless Chromium: role status, live polite, atomic true, for both the shrink and the refusal text. (steward, 2026-10-13:) lince agreed with announcing every area change and kept the new markup test; it ran the test against `main`'s `index.html` (fails) and at the head (passes), and did not repeat the accessibility-tree check or use a real screen reader. Two opinions, not entries: an area change that cancels a search updates two polite regions back to back; a repeated identical refusal may be skipped by some readers (NVDA).
 
 ## Keep the map still when an error replaces the progress line mid-stroke
 - state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
-- scope: lince's finding 1 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Since #23 the progress line is always one line, so a search that fails during a stroke and writes a two-line error ("O servidor do OpenStreetMap está ocupado…") grows `#status` and moves the map 17.5 px under the finger (measured at 453 px: row 18 → 35 px, map top 259.5 → 277). Keep the map from moving when an error replaces progress in the narrow layout, for example a reserved two-line height there. Out of scope: the desktop layout, `#draw-hint`.
+- scope: lince's finding 1 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Since #23 the progress line is always one line, so a search that fails during a stroke and writes a two-line error ("O servidor do OpenStreetMap está ocupado…") grows `#status` and moves the map 17.5 px under the finger (measured by lince at 453 px on #23: row 18 → 35 px, map moved 17.5 px; the map tops 259.5 → 277 px are from lince's #19 review at 390x844, for a long progress line being cleared, https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938). Keep the map from moving when an error replaces progress in the narrow layout, for example a reserved two-line height there. Out of scope: the desktop layout, `#draw-hint`.
 - branch: `atlas/status-error` (`cdedaed`) — base `main` (`bb1f040`)
 - pr: https://github.com/olavostauros/lead-finder/pull/26
 - review:
 - notes: 2026-10-13 atlas. Correction from lince on #24 (https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938): only "row 18 → 35 px at 453 px" is from the #23 review; "map top 259.5 → 277" is from the #19 review at 390x844. CSS only: in the narrow layout `#status` reserves two lines (`min-height: 2.5em`), three below 360 px (`3.75em`); from 900 px it keeps one line (`1.25em`), since the map sits beside it there. Three below 360 px because the longest search error ("O servidor do OpenStreetMap não respondeu a tempo…", 576 px in Noto Sans at 14 px) wraps to three lines at 320 px in Noto Sans, a stand-in for wide system fonts like SF; it is two lines there in Liberation Sans, and two in both from 340 px up. CDP check (Chromium 9881, static 4881, `Emulation.setDeviceMetricsOverride`), built main vs branch, Overpass answering 429 with `Retry-After: 1` until "O servidor do OpenStreetMap está ocupado…": map moved 17.5 px at 320, 390 and 453 px on main, 0 on the branch; 1280 px 0 on both; every search error injected at 320/360/390/453/899 px leaves the map in place on the branch, Noto Sans included; no horizontal overflow. Cost: the map starts 17.5 px lower in the narrow layout (35 px below 360 px). Not covered: browser text zoom large enough to wrap an error past the reserve. Not checked on a real phone.
 
 ## Let a cut-short progress line be read in full
-- state: queued
+- state: done
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
-- scope: lince's finding 2 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Once the progress line is cut with an ellipsis, a sighted user cannot see the rest anywhere. Expose the full text, for example `title` set to the message on progress and cleared otherwise. Out of scope: lince's nit to limit the one-line rule to the narrow layout.
-- branch:
-- pr:
-- review:
-- notes:
+- scope: lince's finding 2 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Once the progress line is cut with an ellipsis, a sighted user cannot see the rest of it on the line. The search term stays visible and editable in `#term`; at 1280 px only the end of the provider name in a very long message is lost (on a 320 px phone a long term is cut too, per lince's review of #25), and lince called the finding an opinion more than a failure: it found no case where the user loses something they need (https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938). Expose the full text, for example `title` set to the message on progress and cleared otherwise. Out of scope: lince's nit to limit the one-line rule to the narrow layout.
+- branch: `atlas/status-title` (`f812de9`) from `main` (`bb1f040`)
+- pr: https://github.com/olavostauros/lead-finder/pull/25
+- merged: 2026-10-13 10:23 -03 by olavostauros, merge commit `5bf165c`, head `57c1240`
+- review: no blocking findings at `57c1240` by lince — https://github.com/olavostauros/lead-finder/pull/25#issuecomment-6146541923
+- notes: `showStatus` (new `src/app/status-line.ts`, tested in `status-line.test.ts`) sets `title` to the message for the progress tone and clears it on every other call, so an error or outcome never shows a stale progress message on hover. `title` does nothing on a touch screen; that is accepted, not fixed: the term stays in `#term` (the cut part is the end of the provider name on a wide screen, but on a 320 px phone a long term is cut too, corrected by steward from lince's low finding on #25), and screen readers already get the full `textContent`. A tap-to-expand would grow the row under the user's hand, the movement the one-line rule exists to stop, so it was left out. Lince's desktop-clamp nit stays out of scope. (steward, 2026-10-13:) lince ran mutation checks on `status-line.ts` (dropping the `title` assignment, or never clearing it, fails the tests) and judged the touch decision from the code, without a browser. Opinion, not an entry: while progress shows, `title` gives the `role="status"` element an accessible name equal to its text, so a screen reader browsing by virtual cursor may read the message twice; live announcements are unaffected.
