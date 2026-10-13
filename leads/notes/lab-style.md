@@ -3,7 +3,7 @@ title: lab-style
 tags: [style, practice]
 related: [lab-backlog, work-queue]
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 ---
 
 # Lab style
@@ -97,8 +97,8 @@ does the rest without being walked through it.
    Independent agents run in parallel.
 4. *Chain.* The owner files these standing, so the seat names them in the
    brief: every pull request into `main` gets a lince review, recorded by
-   its PR comment; every merge gets a steward sweep, which carries the
-   reviews and merges into the queue.
+   its PR comment; every merge or close gets a steward sweep, which
+   carries the reviews, merges and closes into the queue.
    A finding or blocker goes back to the owner as a proposed entry.
    Nothing else starts without him.
 5. *Relay.* Pass each hand-back on as it stands. An agent that stops on a
