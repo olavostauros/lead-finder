@@ -213,11 +213,11 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes:
 
 ## Keep a search's outcome when draw mode ends
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's finding B in its second review of PR #9 (https://github.com/olavostauros/lead-finder/pull/9#issuecomment-6145058949). Draw mode and the search share `#status`: while draw mode is open, search events overwrite the draw hint, and `stop()` writes `""` once the runner is no longer busy, so an outcome that arrived during drawing is erased. Recorded: a search ran through four 429s in draw mode, the status became "O servidor do OpenStreetMap está ocupado. Tente de novo em alguns minutos.", and Escape blanked it; "Busca cancelada." disappears the same way. Keep the search's last message, outcome included, and restore it on leaving draw mode, or give draw mode its own hint element. Out of scope: the search's own logic.
-- branch:
-- pr:
+- branch: `atlas/draw-status` (`010089a`), base `main` (`38b9dcb`)
+- pr: https://github.com/olavostauros/lead-finder/pull/14
 - review:
-- notes:
+- notes: Draw mode got its own `#draw-hint` line, so `#status` is never written by draw mode and nothing restores it. Browser check at 390 px with a mocked 429: the outcome was blank after Escape on `main` and stays on this branch; "Busca cancelada." the same. No unit test: no DOM test environment in `src/`. Conflicts with #12 in `src/app/main.ts` and this file.
