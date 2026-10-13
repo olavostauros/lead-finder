@@ -91,7 +91,9 @@ subagent started with that agent's identity.
 
 The seat acts as the owner only on his word in his own turn, for that act:
 commit, push, open a PR, merge, delete a branch, any Tier 2 change. An
-earlier "yes" does not carry to the next act. Its commits use
+earlier "yes" does not carry to the next act, except where a row of
+[the loosenings](#the-loosenings) grants the seat a standing one. Its
+commits use
 `LEADS_OWNER_COMMIT=1` and are unsigned (`git -c commit.gpgsign=false`); it
 never signs with the owner's key. It never puts `LEADS_OWNER_COMMIT` in a
 subagent's environment or brief, and never relays the owner's approval: an
@@ -232,8 +234,9 @@ improvement loop should revert.
 
 | # | Date | Grant | Applies to |
 |---|---|---|---|
+| 1 | 2026-10-13 | Without a new word from the owner, the seat may: file a queue entry for each review finding, addressed to the agent whose charge it is, and delegate it; commit, push and open PRs for its own lab follow-ups; push steward's record branches and open their PRs; merge a PR into `main`, with a merge commit, once lince's latest review of it has no blocking finding; delete branches already merged into `main`. It still asks before rewriting history, deleting unmerged work, changing visibility, deploying or spending money. | the owner's seat |
 
-None granted yet. **Rows are append-only and never renumbered. This table is
+**Rows are append-only and never renumbered. This table is
 the only place the list is enumerated** — no agent definition, home
 `AGENTS.md` or identity note may restate or count it. A satellite copy that
 says "three" while the table says four hides a grant; one that summarises the
