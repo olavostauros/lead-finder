@@ -190,9 +190,10 @@ tells you to.
 - `hooks/*`, `.mise/*` and `roster.tsv` — the guard, the task surface, and
   who counts as an agent.
 - Anything in the work tree **outside** your own directory and this
-  lab's, other than a new file in `docs/` — each agent's directory is the others' Tier 2. For an agent
-  that owns nothing, every directory is Tier 2: a fix it wants is a finding
-  or a queue entry for the owner, never a code branch of its own.
+  lab's, other than a new file in `docs/` — each agent's directory is the
+  others' Tier 2. For an agent that owns nothing, every directory is Tier 2
+  but that one exception: a fix it wants is a finding or a queue entry for
+  the owner, never a code branch of its own.
 - Anything that changes what another agent is allowed to do.
 - Anything that changes how identity, credentials, or signing work.
 
