@@ -1,7 +1,7 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
-import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
+import { areaKm2, checkArea, fitUnderCap, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
 import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
@@ -53,7 +53,7 @@ function clearResults() {
   $("count").textContent = "";
 }
 
-function setArea(bbox: BBox, label?: string): boolean {
+function setArea(bbox: BBox, label?: string, note?: string): boolean {
   runner.cancel("area");
   // Results on screen belong to the area being left; they must not sit under the new label.
   clearResults();
@@ -72,7 +72,7 @@ function setArea(bbox: BBox, label?: string): boolean {
     ],
     { color: "#2563eb", weight: 2, fillOpacity: 0.05, interactive: false },
   ).addTo(areaLayer);
-  $("area-info").textContent = `Área: ${label ? `${label} · ` : ""}${formatKm2(check.km2)}`;
+  $("area-info").textContent = `Área: ${label ? `${label} · ` : ""}${formatKm2(check.km2)}${note ? `. ${note}` : ""}`;
   return true;
 }
 
@@ -235,7 +235,15 @@ $<HTMLDataListElement>("categories").append(
 $("draw").addEventListener("click", () => (stopDrawing ? stopDrawing() : startDrawing()));
 $("use-view").addEventListener("click", () => {
   stopDrawing?.();
-  setArea(toBBox(map.getBounds()), "visível no mapa");
+  const view = toBBox(map.getBounds());
+  const fitted = fitUnderCap(view);
+  if (fitted === view) setArea(view, "visível no mapa");
+  else
+    setArea(
+      fitted,
+      "centro do mapa",
+      `A área visível tem ${formatKm2(areaKm2(view))} e passa do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
+    );
 });
 
 $("place-form").addEventListener("submit", async (e) => {

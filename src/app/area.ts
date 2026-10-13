@@ -39,3 +39,15 @@ export function widenToMinimum(b: BBox, minSideKm = 2): BBox {
   }
   return out;
 }
+
+export function fitUnderCap(b: BBox, maxKm2 = MAX_AREA_KM2): BBox {
+  const km2 = areaKm2(b);
+  if (km2 <= maxKm2 || !Number.isFinite(km2)) return b;
+  // Just under 1, so rounding cannot leave the result a hair over the cap that checkArea enforces.
+  const scale = Math.sqrt(maxKm2 / km2) * (1 - 1e-9);
+  const midLat = (b.south + b.north) / 2;
+  const midLon = (b.west + b.east) / 2;
+  const halfLat = ((b.north - b.south) / 2) * scale;
+  const halfLon = ((b.east - b.west) / 2) * scale;
+  return { south: midLat - halfLat, west: midLon - halfLon, north: midLat + halfLat, east: midLon + halfLon };
+}
