@@ -66,7 +66,8 @@ those are findings for [[lab-backlog]].
   `gh` login, read-only, and writes nothing there: no comment, no PR, no
   push.
 - Commits land on a local `steward/<topic>` branch of the work tree and
-  stay there. steward pushes nothing; the owner merges the branch or
+  stay there. steward pushes nothing; the owner's seat pushes the branch,
+  on the owner's word or under the loosenings in `AGENTS.md`, or the owner
   discards it.
 - Home: `~/agents/leads/home/` — local git repo, no remote, keyed by the lab
   rather than by name.
