@@ -253,7 +253,9 @@ its workspace is the lab's own: `~/agents/leads/`. The
   and belongs to nobody, which is the point: this lab has no mail and
   claims no domain. `LAB_AUTHOR_DOMAIN` in `mise.toml` is the label, and
   it changes only to a domain this lab owns, once there is mail to go
-  with it, as a dated widening.
+  with it, as a dated widening. `agent-env` also turns off commit and tag
+  signing: the owner's signing key is the owner's, so agent commits are
+  unsigned.
 - **gh** — the owner's login, used as transport. No agent has a GitHub
   identity of its own; every push and PR goes through the owner's
   credentials and says so in the PR body. Whether the builders and judges

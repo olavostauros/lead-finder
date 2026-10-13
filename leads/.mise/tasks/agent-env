@@ -15,3 +15,12 @@ printf 'export GIT_AUTHOR_NAME=%q\n' "$name"
 printf 'export GIT_AUTHOR_EMAIL=%q\n' "$name@$LAB_AUTHOR_DOMAIN"
 printf 'export GIT_COMMITTER_NAME=%q\n' "$name"
 printf 'export GIT_COMMITTER_EMAIL=%q\n' "$name@$LAB_AUTHOR_DOMAIN"
+# Agent commits are unsigned: the owner's global signing key is the owner's.
+# Append to any GIT_CONFIG_* already in the caller's shell rather than replace it.
+cat <<'EOF_'
+_lab_n=${GIT_CONFIG_COUNT:-0}
+export "GIT_CONFIG_KEY_$_lab_n=commit.gpgsign" "GIT_CONFIG_VALUE_$_lab_n=false"
+export "GIT_CONFIG_KEY_$((_lab_n + 1))=tag.gpgsign" "GIT_CONFIG_VALUE_$((_lab_n + 1))=false"
+export GIT_CONFIG_COUNT=$((_lab_n + 2))
+unset _lab_n
+EOF_
