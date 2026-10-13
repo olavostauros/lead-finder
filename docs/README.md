@@ -2,8 +2,8 @@
 
 The project's written memory: what was decided and why, and what was learned
 that the code does not say. The brief is [`../AGENTS.md`](../AGENTS.md); how
-the agents work is [`../leads/`](../leads/AGENTS.md). This directory is about
-the product.
+the agents work is [`../labs/leads/`](../labs/leads/AGENTS.md). This
+directory is about the product.
 
 ## Layout
 

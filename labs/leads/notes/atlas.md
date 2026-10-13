@@ -26,7 +26,7 @@ Owns `~/Work/lead-finder/src/`. Builds the client-side lead finder under src/: a
 
 - `GIT_AUTHOR_NAME=atlas`, `GIT_AUTHOR_EMAIL=atlas@leads.invalid` —
   a git author label, not a mailbox and not a GitHub account. Set by
-  `mise run agent-env atlas` from `~/Work/lead-finder/leads`.
+  `mise run agent-env atlas` from `~/Work/lead-finder/labs/leads`.
 - No GitHub account, no signing key, no mail. Pushes and PRs go through the
   owner's `gh` login and say so in the PR body.
 - Home: `~/agents/atlas/home/` — local git repo, no remote.
