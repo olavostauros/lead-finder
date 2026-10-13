@@ -63,8 +63,8 @@ Entry shape:
   ```
   docs/     decisions and notes about the product (shared, append-only)
   ```
-- needs: the owner applies the three edits in their own turn. Until then, agents add `docs/` files only through a PR the owner merges.
-- status: awaiting the owner. Checked by steward on 2026-10-13, last on `main` at `2b08b13`: this entry reached `main` through PR #2 (`0c12083`), but none of the three edits is in `leads/AGENTS.md` or the project brief. Merging the PR that carried the entry is not approval of it.
+- needs: nothing; applied.
+- status: applied. PR #17 (`owner/docs-tier1` (`7ee400f`)) merged by olavostauros on 2026-10-13 10:03 -03 as `24a15fd`; `f510a5e` and `7ee400f` are the owner's, unsigned. `f510a5e` applied the three edits, with the Tier 1 preamble's count raised from three lines to four; after lince's request changes at `f510a5e` (comment 6145794553), `7ee400f` carried the exception into the Tier 2 sentence for an agent that owns nothing and into `notes/atlas.md`, `notes/steward.md` and `notes/lince.md`. lince: no blocking findings at `7ee400f` (comment 6145855925). Checked by steward on `main` (`bb1f040`): the Tier 1 line, the Tier 2 words and the brief's Layout line are there. Left open by lince: the agents' homes still confine them to `src/` or `leads/notes/` (the owner's choice); C, no loosenings row for the widening (the owner's call); E, filed below.
 
 ### Name the owner's seat in the contract and give it a loop
 - filed: 2026-10-13 by olavostauros
@@ -115,7 +115,7 @@ Entry shape:
   +is the owner's.
   ```
 - needs: nothing; applied.
-- status: applied. PR #13 (`owner/push-rules` (`2211d33`)) merged by olavostauros on 2026-10-13 09:12 -03 as `38b9dcb`; `2211d33` is the owner's, unsigned. lince: no blocking findings at `2211d33` (comment 6145261903), each hunk identical to this entry's diff. `leads/AGENTS.md:242-245` on `main` (`2b08b13`) is the `+` text; with C applied first, the old `:241-243` became `:242-244`, as lince's nit on #10 foresaw.
+- status: applied. PR #13 (`owner/push-rules` (`2211d33`)) merged by olavostauros on 2026-10-13 09:12 -03 as `38b9dcb`; `2211d33` is the owner's, unsigned. lince: no blocking findings at `2211d33` (comment 6145261903), each hunk identical to this entry's diff. `leads/AGENTS.md:243-245` on `main` (`2b08b13`) is the `+` text, after the context line `:242` (corrected from `:242-245` per lince's nit on #16, comment 6145794118); with C applied first, the old `:241-243` became `:242-244`, as lince's nit on #10 foresaw.
 
 ### Wrap two long lines, and say lince pushes a branch, in AGENTS.md and README.md
 - filed: 2026-10-13 by steward, from lince's nits in its second review of PR #11 (comment 6144954672)
@@ -156,4 +156,55 @@ Entry shape:
 - filed: 2026-10-13 by olavostauros (in the session, item 1 of an audit of the lab's docs)
 - why: the seat's memory held a standing grant ("merge once lince has no blocking finding", among others) that the contract did not: "The owner's seat" said an earlier "yes" does not carry, and the loosenings table was empty. The owner chose to put the grant in the contract.
 - diff: PR #18 (`owner/seat-loosening`): row 1 of the loosenings table; "The owner's seat" defers to the table for standing grants; the Chain step in [[lab-style]], "Who lives here", `notes/steward.md` and the lab README say the seat may push steward's branches under it. After lince's review at `32d2531` (comment 6145794986): the row excludes PRs that touch a Tier 2 item, [[lab-style]] or the table, defines "lab follow-up", and ties a merge to lince's review at the PR's current head.
-- needs: the owner merges PR #18 himself, since it changes the contract.
+- needs: nothing; applied.
+- status: applied. PR #18 (`owner/seat-loosening` (`365624c`)) merged by olavostauros on 2026-10-13 10:03 -03 as `7734748`; `32d2531`, `9a0ac47` (a merge of `main` `e4b0953`) and `365624c` are the owner's, unsigned. lince: request changes at `32d2531` (comment 6145794986, A high and B medium blocking), then no blocking findings at `365624c` (comment 6145856316), the head that merged. Row 1 is on `main` (`bb1f040`) at `leads/AGENTS.md:241`. Its second round's G, H and nit are filed below.
+
+### Say on the README who pushes steward's branches, and wrap two lines
+- filed: 2026-10-13 by steward, from lince's finding G and nit in its second review of PR #18 (comment 6145856316)
+- why: `leads/README.md:17` on `main` (`bb1f040`) says steward's branches "stay local until the owner's seat pushes them". That drops both "on the owner's word or under the loosenings" and "or the owner discards it", which `leads/AGENTS.md:44-46` says; it is the standing-duty reading the entry "Steward's branches are pushed only on the owner's word" took out of the contract in #13. The line is 106 columns; `leads/AGENTS.md:97` is 87. #13 wrapped lines like these.
+- diff, in `leads/README.md`:
+  ```
+   Builders (kind `builder` on `roster.tsv`) work on `<name>/<topic>`
+   branches and open pull requests into `main`; steward's branches stay local
+  -until the owner's seat pushes them, and lince pushes a branch only to record a review that has no PR. None
+  -merges. The owner files work into `notes/work-queue.md`, addressed to one
+  -agent, and that agent takes it from the top.
+  +until the seat pushes one, on the owner's word or under the loosenings, or
+  +the owner discards it; lince pushes a branch only to record a review that
+  +has no PR. None merges. The owner files work into `notes/work-queue.md`,
+  +addressed to one agent, and that agent takes it from the top.
+  ```
+  and in `leads/AGENTS.md`:
+  ```
+   [the loosenings](#the-loosenings) grants the seat a standing one. Its
+  -commits use `LEADS_OWNER_COMMIT=1` and are unsigned (`git -c commit.gpgsign=false`); it
+  -never signs with the owner's key. It never puts `LEADS_OWNER_COMMIT` in a
+  +commits use `LEADS_OWNER_COMMIT=1` and are unsigned
+  +(`git -c commit.gpgsign=false`); it never signs with the owner's key. It
+  +never puts `LEADS_OWNER_COMMIT` in a
+  ```
+- needs: the owner applies it in his own turn; it touches `leads/AGENTS.md` and the README, so row 1 does not cover it.
+
+### Say whose Tier 2 row 1's exclusion means
+- filed: 2026-10-13 by steward, from lince's finding H in its second review of PR #18 (comment 6145856316)
+- why: row 1 (`leads/AGENTS.md:241` on `bb1f040`) excludes "a PR that touches a Tier 2 item", but Tier 2 is written per agent ("outside your own directory"), and the seat owns no directory and has no Tier 1. A strict reader finds every PR is Tier 2 for the seat, so the merge grant never applies; a loose one reads an atlas PR under `src/` as Tier 1 for atlas. The exclusion holds under either reading; only the merge grant's reach is unclear. Since row 1, the seat has merged #19 to #24 on lince's verdicts, reading it the loose way.
+- diff, in row 1 of the loosenings table:
+  ```
+  -A PR that touches a Tier 2 item, [[lab-style]] or this table is not a follow-up
+  +A PR that touches a Tier 2 item for the PR's author, or `leads/AGENTS.md`, `hooks/*`, `.mise/*`, `roster.tsv`, [[lab-style]] or this table, is not a follow-up
+  ```
+  (the row is one table line; only these words change.)
+- needs: the owner decides and applies it in his own turn; it changes the loosenings table.
+
+### Let atlas's Stance name the docs/ exception
+- filed: 2026-10-13 by steward, from lince's finding E in its second review of PR #17 (comment 6145855925)
+- why: `notes/atlas.md:22-23` on `main` (`bb1f040`) makes a new file in `docs/` atlas's one exception, but its Stance, `:37-38`, still says the smallest diff is "under `src/` and nowhere else". Atlas asked to record a decision with a fix would follow the narrower line and stop. It widens what atlas may do, so it is Tier 2 to steward, not a fact fix.
+- diff, in `leads/notes/atlas.md`:
+  ```
+   watch fail is a claim, not a fix. The smallest diff that answers the entry,
+  -under `src/` and nowhere else; a change that wants to reach further is
+  +under `src/` and nowhere else but a new file in `docs/`; a change that
+  +wants to reach further is
+  ```
+  with the rest of the paragraph rewrapped.
+- needs: the owner applies it in his own turn; atlas's home (`~/agents/atlas/home/AGENTS.md:81`) still confines atlas to `src/` and `leads/notes/` either way.
