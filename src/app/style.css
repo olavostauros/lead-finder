@@ -104,10 +104,18 @@ button:disabled {
   color: var(--error);
 }
 
-/* Emptied mid-stroke, a collapsing #status would move the map under the finger and stretch the drawn rectangle. */
+/* The map sits below #status in the narrow layout: a row that changes height mid-stroke, emptied or replaced by an error,
+   moves the map under the finger and stretches the drawn rectangle. Two lines hold every search error from 360 px up;
+   below that a wide system font (SF, Noto Sans) wraps the longest to three. */
 #status {
   line-height: 1.25;
-  min-height: 1.25em;
+  min-height: 2.5em;
+}
+
+@media (max-width: 359px) {
+  #status {
+    min-height: 3.75em;
+  }
 }
 
 /* Progress is cleared when the search ends, often mid-stroke: wrapped to two lines, it would drop one and move the map. */
@@ -181,5 +189,8 @@ td a {
   }
   .results {
     grid-area: results;
+  }
+  #status {
+    min-height: 1.25em;
   }
 }

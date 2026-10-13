@@ -347,14 +347,14 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: `#area-info` is now `role="status" aria-live="polite"`, matching `#draw-hint` and `#status`. It announces every area change, not only a refusal: each change follows a user act (draw, place pick, "Usar área visível") and the line is the only report of its outcome (the area's size, or the shrink note), so it is a confirmation, not chatter; polite waits for the reader to finish. Toggling `aria-live` on only for a refusal was rejected: screen readers track live regions unreliably once the attribute changes. Checked in headless Chromium: role status, live polite, atomic true, for both the shrink and the refusal text. (steward, 2026-10-13:) lince agreed with announcing every area change and kept the new markup test; it ran the test against `main`'s `index.html` (fails) and at the head (passes), and did not repeat the accessibility-tree check or use a real screen reader. Two opinions, not entries: an area change that cancels a search updates two polite regions back to back; a repeated identical refusal may be skipped by some readers (NVDA).
 
 ## Keep the map still when an error replaces the progress line mid-stroke
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
 - scope: lince's finding 1 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Since #23 the progress line is always one line, so a search that fails during a stroke and writes a two-line error ("O servidor do OpenStreetMap está ocupado…") grows `#status` and moves the map 17.5 px under the finger (measured by lince at 453 px on #23: row 18 → 35 px, map moved 17.5 px; the map tops 259.5 → 277 px are from lince's #19 review at 390x844, for a long progress line being cleared, https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938). Keep the map from moving when an error replaces progress in the narrow layout, for example a reserved two-line height there. Out of scope: the desktop layout, `#draw-hint`.
-- branch:
-- pr:
+- branch: `atlas/status-error` (`cdedaed`) — base `main` (`bb1f040`)
+- pr: https://github.com/olavostauros/lead-finder/pull/26
 - review:
-- notes:
+- notes: 2026-10-13 atlas. Correction from lince on #24 (https://github.com/olavostauros/lead-finder/pull/24#issuecomment-6146469938): only "row 18 → 35 px at 453 px" is from the #23 review; "map top 259.5 → 277" is from the #19 review at 390x844. CSS only: in the narrow layout `#status` reserves two lines (`min-height: 2.5em`), three below 360 px (`3.75em`); from 900 px it keeps one line (`1.25em`), since the map sits beside it there. Three below 360 px because the longest search error ("O servidor do OpenStreetMap não respondeu a tempo…", 576 px in Noto Sans at 14 px) wraps to three lines at 320 px in Noto Sans, a stand-in for wide system fonts like SF; it is two lines there in Liberation Sans, and two in both from 340 px up. CDP check (Chromium 9881, static 4881, `Emulation.setDeviceMetricsOverride`), built main vs branch, Overpass answering 429 with `Retry-After: 1` until "O servidor do OpenStreetMap está ocupado…": map moved 17.5 px at 320, 390 and 453 px on main, 0 on the branch; 1280 px 0 on both; every search error injected at 320/360/390/453/899 px leaves the map in place on the branch, Noto Sans included; no horizontal overflow. Cost: the map starts 17.5 px lower in the narrow layout (35 px below 360 px). Not covered: browser text zoom large enough to wrap an error past the reserve. Not checked on a real phone.
 
 ## Let a cut-short progress line be read in full
 - state: done
