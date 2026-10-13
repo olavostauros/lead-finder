@@ -105,14 +105,15 @@ button:disabled {
 }
 
 /* The map sits below #status in the narrow layout: a row that changes height mid-stroke, emptied or replaced by an error,
-   moves the map under the finger and stretches the drawn rectangle. Two lines hold every search error from 360 px up;
-   below that a wide system font (SF, Noto Sans) wraps the longest to three. */
+   moves the map under the finger and stretches the drawn rectangle. Two lines hold every search error from 22.5em up
+   (360 px at the default 16 px); below that a wide system font (SF, Noto Sans) wraps the longest to three. The breakpoint
+   is in em so it moves with the browser's text size, and 22.4375em keeps 360 px itself on two lines. */
 #status {
   line-height: 1.25;
   min-height: 2.5em;
 }
 
-@media (max-width: 359px) {
+@media (max-width: 22.4375em) {
   #status {
     min-height: 3.75em;
   }
