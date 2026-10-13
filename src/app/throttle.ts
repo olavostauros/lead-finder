@@ -1,6 +1,18 @@
 export type Throttle = <T>(fn: () => Promise<T>) => Promise<T>;
 
-export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(signal?.reason);
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
 
 export function createThrottle(
   intervalMs: number,

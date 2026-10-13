@@ -23,6 +23,8 @@ npm run build      # typecheck + static build into src/dist/
 - `app/categories.ts` — pt-BR categories mapped to OSM tags.
 - `app/draw.ts` — the draw-mode gesture: one pointer, tap or rectangle, the
   start kept as a map coordinate so a zoom cannot move it.
+- `app/search-run.ts` — one search at a time; cancelling it (Cancelar, or a new
+  area) aborts it and drops whatever it returns.
 - `app/main.ts` — the UI: map, area drawing, search, table and pins.
 
 The project lives under `src/` because `src/` is atlas's directory in the
