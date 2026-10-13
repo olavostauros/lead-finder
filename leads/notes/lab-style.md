@@ -95,9 +95,10 @@ does the rest without being walked through it.
    It works in a
    worktree under `~/agents/<name>/`; the shared checkout stays on `main`.
    Independent agents run in parallel.
-4. *Chain.* The owner files these standing, so the seat writes the entry
-   into the brief and the agent records it on its branch: every pull request
-   into `main` gets a lince review entry; every merge gets a steward sweep.
+4. *Chain.* The owner files these standing, so the seat names them in the
+   brief: every pull request into `main` gets a lince review, recorded by
+   its PR comment; every merge gets a steward sweep, which carries the
+   reviews and merges into the queue.
    A finding or blocker goes back to the owner as a proposed entry.
    Nothing else starts without him.
 5. *Relay.* Pass each hand-back on as it stands. An agent that stops on a
