@@ -77,14 +77,19 @@ function retryDelay(res: Response, attempt: number): number {
 export class OverpassProvider implements Provider {
   readonly name = "OpenStreetMap";
   private readonly fetchFn: FetchFn;
-  private readonly sleep: (ms: number) => Promise<void>;
+  private readonly sleep: (ms: number, signal?: AbortSignal) => Promise<void>;
   private readonly now: () => number;
   private readonly timeoutMs: number;
   // Shared by every search, so a new search cannot skip a back-off the server asked for.
   private notBefore = -Infinity;
 
   constructor(
-    opts: { fetchFn?: FetchFn; sleep?: (ms: number) => Promise<void>; now?: () => number; timeoutMs?: number } = {},
+    opts: {
+      fetchFn?: FetchFn;
+      sleep?: (ms: number, signal?: AbortSignal) => Promise<void>;
+      now?: () => number;
+      timeoutMs?: number;
+    } = {},
   ) {
     this.fetchFn = opts.fetchFn ?? ((url, init) => fetch(url, init));
     this.sleep = opts.sleep ?? realSleep;
@@ -103,10 +108,11 @@ export class OverpassProvider implements Provider {
     const body = `data=${encodeURIComponent(buildQuery(area.bbox, query))}`;
 
     for (let attempt = 0; ; attempt++) {
+      signal?.throwIfAborted();
       const wait = this.notBefore - this.now();
       if (wait > 0) {
         onEvent?.({ kind: "waiting", ms: wait });
-        await this.sleep(wait);
+        await this.sleep(wait, signal);
         signal?.throwIfAborted();
       }
       onEvent?.({ kind: "requesting" });

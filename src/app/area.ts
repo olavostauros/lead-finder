@@ -17,7 +17,9 @@ export function checkArea(b: BBox): { ok: boolean; km2: number } {
 }
 
 export function formatKm2(km2: number): string {
-  return `${km2.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} km²`;
+  if (km2 >= 0.1) return `${km2.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} km²`;
+  const m2 = Math.round(km2 * 1e6);
+  return m2 < 1 ? "< 1 m²" : `${m2.toLocaleString("pt-BR")} m²`;
 }
 
 export function widenToMinimum(b: BBox, minSideKm = 2): BBox {

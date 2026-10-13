@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createThrottle } from "./throttle";
+import { createThrottle, sleep } from "./throttle";
 
 describe("createThrottle", () => {
   it("spaces calls at least the interval apart, in order", async () => {
@@ -29,5 +29,24 @@ describe("createThrottle", () => {
     const throttle = createThrottle(0);
     await expect(throttle(async () => Promise.reject(new Error("x")))).rejects.toThrow("x");
     await expect(throttle(async () => 1)).resolves.toBe(1);
+  });
+});
+
+describe("sleep", () => {
+  it("rejects as soon as its signal aborts", async () => {
+    const controller = new AbortController();
+    const started = Date.now();
+    const run = sleep(60_000, controller.signal);
+    controller.abort();
+    await expect(run).rejects.toMatchObject({ name: "AbortError" });
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
+
+  it("rejects at once on an aborted signal", async () => {
+    await expect(sleep(60_000, AbortSignal.abort())).rejects.toMatchObject({ name: "AbortError" });
+  });
+
+  it("resolves after the delay when not aborted", async () => {
+    await expect(sleep(1, new AbortController().signal)).resolves.toBeUndefined();
   });
 });

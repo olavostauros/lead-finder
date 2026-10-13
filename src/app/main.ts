@@ -3,14 +3,17 @@ import "leaflet/dist/leaflet.css";
 import "./style.css";
 import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
+import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
 import { OverpassProvider } from "./overpass";
+import { SearchRunner } from "./search-run";
 import type { Area, BBox, Lead, Provider } from "./types";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 const provider: Provider = new OverpassProvider();
 const geocoder = new NominatimGeocoder();
+const runner = new SearchRunner(provider);
 
 const map = L.map("map").setView([-23.5505, -46.6333], 13);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -22,11 +25,19 @@ map.attributionControl.setPrefix(false);
 const areaLayer = L.layerGroup().addTo(map);
 const pinLayer = L.layerGroup().addTo(map);
 let area: Area | undefined;
+let stopDrawing: (() => void) | undefined;
 
 const status = (msg: string, error = false) => {
   const el = $("status");
   el.textContent = msg;
   el.classList.toggle("error", error);
+};
+
+// Draw mode shares #status; leaving it must bring back a running search's progress, not a blank line.
+let searchProgress = "";
+const searchStatus = (msg: string) => {
+  searchProgress = msg;
+  status(msg);
 };
 
 const toBBox = (b: L.LatLngBounds): BBox => ({
@@ -36,7 +47,16 @@ const toBBox = (b: L.LatLngBounds): BBox => ({
   east: b.getEast(),
 });
 
+function clearResults() {
+  $("results").querySelector("tbody")!.replaceChildren();
+  pinLayer.clearLayers();
+  $("count").textContent = "";
+}
+
 function setArea(bbox: BBox, label?: string): boolean {
+  runner.cancel("area");
+  // Results on screen belong to the area being left; they must not sit under the new label.
+  clearResults();
   const check = checkArea(bbox);
   areaLayer.clearLayers();
   if (!check.ok) {
@@ -59,41 +79,73 @@ function setArea(bbox: BBox, label?: string): boolean {
 function startDrawing() {
   const container = map.getContainer();
   const button = $<HTMLButtonElement>("draw");
-  let start: L.LatLng | undefined;
+  const gesture = new RectGesture<L.LatLng>((ll) => map.latLngToContainerPoint(ll));
+  const hint = "Arraste no mapa para desenhar a área.";
   let preview: L.Rectangle | undefined;
 
-  map.dragging.disable();
-  container.classList.add("drawing");
-  button.disabled = true;
-  status("Arraste no mapa para desenhar a área.");
+  const point = (e: PointerEvent): Point => map.mouseEventToContainerPoint(e);
+  const bounds = (start: L.LatLng, end: Point) => L.latLngBounds(start, map.containerPointToLatLng([end.x, end.y]));
+  const clearPreview = () => {
+    preview?.remove();
+    preview = undefined;
+  };
 
   const onDown = (e: PointerEvent) => {
-    start = map.mouseEventToLatLng(e);
-    container.setPointerCapture(e.pointerId);
+    // Capturing a press on a control would swallow its click: "+", "−" and the attribution link.
+    if (e.target instanceof Element && e.target.closest(".leaflet-control-container")) return;
+    if (gesture.down(e, map.mouseEventToLatLng(e))) container.setPointerCapture(e.pointerId);
   };
   const onMove = (e: PointerEvent) => {
-    if (!start) return;
-    const bounds = L.latLngBounds(start, map.mouseEventToLatLng(e));
-    if (preview) preview.setBounds(bounds);
-    else preview = L.rectangle(bounds, { color: "#2563eb", weight: 1, dashArray: "4", interactive: false }).addTo(map);
+    const stroke = gesture.move(e.pointerId, point(e));
+    if (!stroke) return;
+    const b = bounds(stroke.start, stroke.end);
+    if (preview) preview.setBounds(b);
+    else preview = L.rectangle(b, { color: "#2563eb", weight: 1, dashArray: "4", interactive: false }).addTo(map);
   };
   const onUp = (e: PointerEvent) => {
-    if (!start) return;
-    const bounds = L.latLngBounds(start, map.mouseEventToLatLng(e));
-    preview?.remove();
+    const end = gesture.up(e.pointerId, point(e));
+    if (!end) return;
+    clearPreview();
+    if (end.kind === "tap") {
+      status(`Um toque não desenha. ${hint} Para sair, toque em “Cancelar desenho”.`);
+      return;
+    }
+    stop();
+    setArea(toBBox(bounds(end.start, end.end)), "desenhada");
+  };
+  const onCancel = (e: PointerEvent) => {
+    if (!gesture.cancel(e.pointerId)) return;
+    clearPreview();
+    status(hint);
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape") stop();
+  };
+
+  function stop() {
+    clearPreview();
+    restoreMap();
     container.removeEventListener("pointerdown", onDown);
     container.removeEventListener("pointermove", onMove);
     container.removeEventListener("pointerup", onUp);
+    container.removeEventListener("pointercancel", onCancel);
+    document.removeEventListener("keydown", onKey);
     container.classList.remove("drawing");
-    map.dragging.enable();
-    button.disabled = false;
-    status("");
-    setArea(toBBox(bounds), "desenhada");
-  };
+    button.textContent = "Desenhar área";
+    status(runner.busy ? searchProgress : "");
+    stopDrawing = undefined;
+  }
 
+  const restoreMap = suspend([map.dragging, map.touchZoom, map.doubleClickZoom, map.scrollWheelZoom, map.boxZoom]);
   container.addEventListener("pointerdown", onDown);
   container.addEventListener("pointermove", onMove);
   container.addEventListener("pointerup", onUp);
+  container.addEventListener("pointercancel", onCancel);
+  document.addEventListener("keydown", onKey);
+  container.classList.add("drawing");
+  button.textContent = "Cancelar desenho";
+  status(hint);
+  stopDrawing = stop;
 }
 
 function showPlaces(places: Place[]) {
@@ -106,6 +158,7 @@ function showPlaces(places: Place[]) {
     button.textContent = place.label;
     button.addEventListener("click", () => {
       list.hidden = true;
+      stopDrawing?.();
       const b = place.bbox;
       map.fitBounds([
         [b.south, b.west],
@@ -142,9 +195,8 @@ function phoneCell(lead: Lead): HTMLTableCellElement {
 }
 
 function renderLeads(leads: Lead[], partial: boolean) {
+  clearResults();
   const tbody = $("results").querySelector("tbody")!;
-  tbody.replaceChildren();
-  pinLayer.clearLayers();
   for (const lead of leads) {
     const tr = document.createElement("tr");
     const name = document.createElement("td");
@@ -180,8 +232,11 @@ $<HTMLDataListElement>("categories").append(
   }),
 );
 
-$("draw").addEventListener("click", startDrawing);
-$("use-view").addEventListener("click", () => setArea(toBBox(map.getBounds()), "visível no mapa"));
+$("draw").addEventListener("click", () => (stopDrawing ? stopDrawing() : startDrawing()));
+$("use-view").addEventListener("click", () => {
+  stopDrawing?.();
+  setArea(toBBox(map.getBounds()), "visível no mapa");
+});
 
 $("place-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -205,25 +260,29 @@ $("search-form").addEventListener("submit", async (e) => {
   if (!area) return status("Escolha uma área primeiro.", true);
   if (!term) return status("Informe o que procurar.", true);
 
-  // One search at a time: a second tap must not jump a back-off the server asked for.
-  const button = $<HTMLButtonElement>("search-form").querySelector("button")!;
-  if (button.disabled) return;
+  if (runner.busy) return;
+  const button = $<HTMLButtonElement>("search-form").querySelector<HTMLButtonElement>("button[type=submit]")!;
+  const cancel = $<HTMLButtonElement>("cancel");
   button.disabled = true;
-  let partial = false;
+  cancel.hidden = false;
   try {
-    const leads = await provider.search(area, term, {
-      onEvent: (event) => {
-        if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
-        else if (event.kind === "waiting")
-          status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
-        else partial = true;
-      },
+    const outcome = await runner.run(area, term, (event) => {
+      if (event.kind === "requesting") searchStatus(`Buscando “${term}” no ${provider.name}…`);
+      else if (event.kind === "waiting")
+        searchStatus(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
     });
-    renderLeads(leads, partial);
-    status("");
-  } catch (err) {
-    status(err instanceof Error ? err.message : "Falha na busca.", true);
+    if (outcome.kind === "done") {
+      renderLeads(outcome.leads, outcome.partial);
+      status("");
+    } else if (outcome.kind === "failed") status(outcome.message, true);
+    else if (outcome.reason === "area") status("A área mudou, então a busca anterior foi cancelada. Busque de novo.");
+    else status("Busca cancelada.");
   } finally {
+    const hadFocus = document.activeElement === cancel;
     button.disabled = false;
+    cancel.hidden = true;
+    if (hadFocus) button.focus();
   }
 });
+
+$("cancel").addEventListener("click", () => runner.cancel("user"));
