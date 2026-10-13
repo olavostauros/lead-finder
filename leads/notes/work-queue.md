@@ -3,7 +3,7 @@ title: work-queue
 tags: [queue]
 related: [lab-backlog]
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 ---
 
 # Work queue
@@ -48,3 +48,13 @@ Entry shape:
 - pr:
 - review:
 - notes:
+
+## Review PR #5, search robustness
+- state: done
+- agent: lince
+- filed: 2026-10-13 by olavostauros (standing review filing, in the session)
+- scope: review atlas's `atlas/search-robustness` (`3750a37`) against `../AGENTS.md` and lince's PR #1 findings 1, 2 and 5: back-off and retry, partial results, client-side timeouts, the `Provider.search` `{ signal, onEvent }` change, provider policy, pt-BR copy, LGPD and keys. A verdict only; no code changes.
+- branch:
+- pr: https://github.com/olavostauros/lead-finder/pull/5
+- review: approve at `3750a37` — https://github.com/olavostauros/lead-finder/pull/5#issuecomment-6144539851
+- notes: PR #1 findings 1, 2 and 5 are fixed. Two minor findings, none blocking: a search can no longer be cancelled, and while a back-off runs the user can change the area, so results land under the new area's label; `AbortSignal.any` (`src/app/http.ts:10`) is missing in Safari < 17.4 / Chrome < 116 / Firefox < 124, which Vite 8's default target includes, and fails as soon as a caller passes `signal` (none does today). Gates run: npm test (53 passed), typecheck, build, lab `mise run test`, diff check. Not run: browser, live Overpass/Nominatim, phone.
