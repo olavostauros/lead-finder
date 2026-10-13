@@ -275,3 +275,23 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - pr: https://github.com/olavostauros/lead-finder/pull/22
 - review:
 - notes: `#area-info` is now `role="status" aria-live="polite"`, matching `#draw-hint` and `#status`. It announces every area change, not only a refusal: each change follows a user act (draw, place pick, "Usar área visível") and the line is the only report of its outcome (the area's size, or the shrink note), so it is a confirmation, not chatter; polite waits for the reader to finish. Toggling `aria-live` on only for a refusal was rejected: screen readers track live regions unreliably once the attribute changes. Checked in headless Chromium: role status, live polite, atomic true, for both the shrink and the refusal text.
+
+## Keep the map still when an error replaces the progress line mid-stroke
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
+- scope: lince's finding 1 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Since #23 the progress line is always one line, so a search that fails during a stroke and writes a two-line error ("O servidor do OpenStreetMap está ocupado…") grows `#status` and moves the map 17.5 px under the finger (measured at 453 px: row 18 → 35 px, map top 259.5 → 277). Keep the map from moving when an error replaces progress in the narrow layout, for example a reserved two-line height there. Out of scope: the desktop layout, `#draw-hint`.
+- branch:
+- pr:
+- review:
+- notes:
+
+## Let a cut-short progress line be read in full
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
+- scope: lince's finding 2 on PR #23 (https://github.com/olavostauros/lead-finder/pull/23#issuecomment-6146432747). Once the progress line is cut with an ellipsis, a sighted user cannot see the rest anywhere. Expose the full text, for example `title` set to the message on progress and cleared otherwise. Out of scope: lince's nit to limit the one-line rule to the narrow layout.
+- branch:
+- pr:
+- review:
+- notes:
