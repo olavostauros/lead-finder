@@ -44,3 +44,9 @@ Entry shape:
   docs/     decisions and notes about the product (shared, append-only)
   ```
 - needs: the owner applies the three edits in their own turn. Until then, agents add `docs/` files only through a PR the owner merges.
+
+### Name the owner's seat in the contract and give it a loop
+- filed: 2026-10-13 by olavostauros
+- why: "Who are you?" made the session the owner types into ask which agent it was. On 2026-10-13 the owner ran the loop by hand (orient, file, delegate, chain, relay) and asked in his own turn for it to be taught to the contract and the agents.
+- diff: PR #4 (`owner/session-loop`): split the unset-identity case in "Who are you?"; add "The owner's seat" (authority) to `leads/AGENTS.md` with a Read-first row; add the loop to `notes/lab-style.md`.
+- needs: the owner merges PR #4.

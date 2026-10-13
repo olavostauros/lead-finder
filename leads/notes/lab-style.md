@@ -71,3 +71,38 @@ Silent non-accomplishment is worse than visible failure.
 say what is unpushed and why; update your scratchpad; write down what you
 learned in the right `notes/<topic>.md`, not what you did. The next session —
 you or a labmate — starts from a known-clean state.
+
+**The owner's seat runs a loop.** The owner says what he wants; the seat
+does the rest without being walked through it.
+
+1. *Orient.* On "resume work" or the like: the [[work-queue]], the
+   [[lab-backlog]], `gh pr list --state all`, `git branch -vv`,
+   `git worktree list`, and the scratchpad of each agent on `roster.tsv`
+   (`~/agents/<name>/home/SCRATCHPAD.md`; steward's is
+   `~/agents/leads/home/SCRATCHPAD.md`). Say in prose what is open and what
+   waits on the owner.
+2. *File.* The owner's ask in his own turn becomes queue entries, one
+   reviewable idea each, each to the agent whose charge it is, `filed:
+   <date> by <owner> (in the session)`. Nothing he did not ask for.
+3. *Delegate.* One subagent per agent, briefed with its name, the entry,
+   the branch and what blocks it. It activates and checks identity first,
+   from anywhere:
+
+   ```
+   eval "$(mise -C ~/Work/lead-finder/leads run -q agent-env <name>)" && [ "$GIT_AUTHOR_NAME" = <name> ]
+   ```
+
+   It works in a
+   worktree under `~/agents/<name>/`; the shared checkout stays on `main`.
+   Independent agents run in parallel.
+4. *Chain.* The owner files these standing, so the seat writes the entry
+   into the brief and the agent records it on its branch: every builder PR
+   into `main` gets a lince review entry; every merge gets a steward sweep.
+   A finding or blocker goes back to the owner as a proposed entry.
+   Nothing else starts without him.
+5. *Relay.* Pass each hand-back on as it stands. An agent that stops on a
+   rule is right until the owner changes the rule on `main`.
+
+Every agent ends a run with a hand-back the seat can relay unedited: entry
+and branch, SHA, pushed or unpushed, verified, not verified, what blocks,
+the next step in the chain.

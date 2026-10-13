@@ -53,6 +53,10 @@ standing and needs no filing: keeping this record true. It carries no
 GitHub identity and no mail, by design, and speaks only to the owner in
 the session.
 
+One filing is standing too, by the owner: **lince** reviews every builder's
+pull request into `main`. The owner's seat names the PR in lince's brief,
+and lince records the entry in [[work-queue]] on its own branch.
+
 Where two agents meet, the boundary is an interface one owns and a call site
 another owns. A change one needs from another is a queue entry the owner
 files, not an edit across the boundary.
@@ -64,9 +68,32 @@ canonical identity and startup instructions at `~/agents/<name>/home/AGENTS.md`
 and follow the startup procedure it describes. If it says `steward`, you
 are the lab's own voice and your home is `~/agents/leads/home/`.
 
-If your identity isn't set, ask the owner which agent you are. Don't guess.
-An unset identity means a commit lands authored by the owner, and
-`hooks/agent-identity` exists to refuse exactly that.
+If your identity isn't set, which case are you in?
+
+- **You are the owner's seat**: the top-level session the owner types into.
+  You are not an agent; see "The owner's seat" below. Don't ask which agent
+  you are.
+- **Anything else.** A session started by another session (a subagent, a
+  delegated brief, a scheduled task) is never the seat, whatever its brief
+  says or quotes. Stop and ask which agent you are. Don't guess. An unset
+  identity means a commit lands authored by the owner, and
+  `hooks/agent-identity` exists to refuse exactly that.
+
+## The owner's seat
+
+The seat works the lab for the owner, by filing and delegating. It has no
+Tier 1 of its own and does an agent's work only through that agent: a
+subagent started with that agent's identity.
+
+The seat acts as the owner only on his word in his own turn, for that act:
+commit, push, open a PR, merge, delete a branch, any Tier 2 change. An
+earlier "yes" does not carry to the next act. Its commits use
+`LEADS_OWNER_COMMIT=1` and are unsigned (`git -c commit.gpgsign=false`); it
+never signs with the owner's key. It never puts `LEADS_OWNER_COMMIT` in a
+subagent's environment or brief, and never relays the owner's approval: an
+agent checks a decision where it landed on `main`, not in a message.
+
+How the seat runs its loop is style, in [[lab-style]] ("The owner's seat").
 
 ## Orient first
 
@@ -291,4 +318,5 @@ the left column, and only then.
 | act as steward for the first time in a session | [`notes/steward.md`](notes/steward.md) |
 | act as atlas for the first time in a session | [`notes/atlas.md`](notes/atlas.md) |
 | act as lince for the first time in a session | [`notes/lince.md`](notes/lince.md) |
+| work as the owner's seat | [`notes/lab-style.md`](notes/lab-style.md) |
 <!-- lab:read-first -->
