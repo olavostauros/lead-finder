@@ -33,6 +33,13 @@ const status = (msg: string, error = false) => {
   el.classList.toggle("error", error);
 };
 
+// Draw mode shares #status; leaving it must bring back a running search's progress, not a blank line.
+let searchProgress = "";
+const searchStatus = (msg: string) => {
+  searchProgress = msg;
+  status(msg);
+};
+
 const toBBox = (b: L.LatLngBounds): BBox => ({
   south: b.getSouth(),
   west: b.getWest(),
@@ -125,7 +132,7 @@ function startDrawing() {
     document.removeEventListener("keydown", onKey);
     container.classList.remove("drawing");
     button.textContent = "Desenhar área";
-    status("");
+    status(runner.busy ? searchProgress : "");
     stopDrawing = undefined;
   }
 
@@ -260,9 +267,9 @@ $("search-form").addEventListener("submit", async (e) => {
   cancel.hidden = false;
   try {
     const outcome = await runner.run(area, term, (event) => {
-      if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
+      if (event.kind === "requesting") searchStatus(`Buscando “${term}” no ${provider.name}…`);
       else if (event.kind === "waiting")
-        status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
+        searchStatus(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
     });
     if (outcome.kind === "done") {
       renderLeads(outcome.leads, outcome.partial);
