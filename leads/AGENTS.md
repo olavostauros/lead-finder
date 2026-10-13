@@ -55,7 +55,8 @@ the session.
 
 One filing is standing too, by the owner: **lince** reviews every pull
 request into `main`, the owner's and steward's included. The owner's seat names the PR in lince's brief,
-and lince records the entry in [[work-queue]] on its own branch.
+and lince's PR comment is the record: steward folds the verdict into
+[[work-queue]] on its sweep. Lince cuts no branch to record a PR review.
 
 Where two agents meet, the boundary is an interface one owns and a call site
 another owns. A change one needs from another is a queue entry the owner

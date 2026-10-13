@@ -3,7 +3,7 @@ title: steward
 tags: [identity, agent, stewardship]
 related: [work-queue, lab-backlog]
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 ---
 
 # steward
@@ -24,6 +24,11 @@ wakes. What it keeps true, in order:
   branch on disk, a `queued` entry addressed to nobody on the roster, a
   backlog entry the owner has since applied. Fix the state, say what the
   evidence was.
+- **Reviews.** Every pull request into `main`, merged or closed, with a
+  lince review comment: the queue has an entry for it whose `review:` line
+  holds the verdict, the SHA and the comment URL. Add the entry (a PR of the
+  owner's or steward's has none) or fill the line. A PR comment is the only
+  record lince keeps of a PR review.
 - **Branches and merges.** What is unmerged into `main`, what is unpushed,
   what exists on one disk only, which worktrees were left behind. A commit
   that lives in a single working tree is one disk failure from gone, and
