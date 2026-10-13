@@ -389,3 +389,15 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - merged: 2026-10-13 10:32 -03 by olavostauros, merge commit `64e9440`, head `b1a4556`
 - review: no blocking findings at `b1a4556` by lince, advice only (Tier 3) — https://github.com/olavostauros/lead-finder/pull/28#issuecomment-6146716108. No GitHub review approval.
 - notes: `b1a4556` is steward's, unsigned; the PR body says the owner's seat pushed it under loosening row 1. Lince applied E and G by machine to copies of `main`'s files: each hunk matches once and wraps at 75 columns or less; row 1, the seat paragraph, the README and `notes/atlas.md` are unchanged on the branch. It found that H closes its #27 finding and called H fit to apply as written. Three low findings on H, all fixed in the entry on `steward/sweep-26-28`: 1, "what it widens" missed two narrowings (a builder PR carrying an owner-authored commit, and agents' fact fixes in identity notes); 2, a commit by someone not on `roster.tsv` (a stranger's PR to `.github/`) matches no tier, a gap that exists today; 3, #24's and #27's PR bodies also say "under loosening row 1", not #21's alone.
+
+## Size the status line's three-line breakpoint in em
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
+- scope: lince's low finding on PR #26 (https://github.com/olavostauros/lead-finder/pull/26#issuecomment-6146658793). `#status` reserves its height in `em` but switches from two lines to three at `max-width: 359px` (`src/app/style.css:115` on `c0570d5`), so with text-only scaling at 130% the longest search error wraps to three lines at 360, 375 and 390 px where two are reserved, and the map still moves 22.75 px. Make the breakpoint follow the text size, for example `max-width: 22.5em`, and keep the CSS comment at `:108` true. Out of scope: the desktop layout, `#draw-hint`, the one-line progress rule.
+
+## Stop the browser asking for /favicon.ico at the origin root
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (under loosening row 1)
+- scope: lince's nit on PR #14 (the Pages deploy). The app is served under `/lead-finder/` and declares no icon, so every load asks for `/favicon.ico` at the origin root and gets a 404. Declare an icon in `src/index.html` that the build serves under the app's own base path, with no new runtime dependency. Out of scope: an app manifest, touch icons beyond what one `<link rel="icon">` needs.
