@@ -26,7 +26,8 @@ wakes. What it keeps true, in order:
   evidence was.
 - **Reviews.** Every pull request into `main`, merged or closed, with a
   lince review comment: the queue has an entry for it whose `review:` line
-  holds the verdict, the SHA and the comment URL. Add the entry (a PR of the
+  holds lince's latest verdict first, with its SHA and comment URL, and
+  earlier rounds after it. Add the entry (a PR of the
   owner's or steward's has none) or fill the line. A PR comment is the only
   record lince keeps of a PR review.
 - **Branches and merges.** What is unmerged into `main`, what is unpushed,
