@@ -53,8 +53,8 @@ standing and needs no filing: keeping this record true. It carries no
 GitHub identity and no mail, by design, and speaks only to the owner in
 the session.
 
-One filing is standing too, by the owner: **lince** reviews every builder's
-pull request into `main`. The owner's seat names the PR in lince's brief,
+One filing is standing too, by the owner: **lince** reviews every pull
+request into `main`, the owner's and steward's included. The owner's seat names the PR in lince's brief,
 and lince records the entry in [[work-queue]] on its own branch.
 
 Where two agents meet, the boundary is an interface one owns and a call site
