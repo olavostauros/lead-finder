@@ -255,3 +255,23 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - pr: https://github.com/olavostauros/lead-finder/pull/19
 - review:
 - notes: 2026-10-13 atlas. `#status` gets `line-height: 1.25; min-height: 1.25em` (not `1lh`, for Safari before 16.4). CDP check, main vs branch, `#status` filled then emptied: 390x844 map moved 16 px on main, 0 on the branch; 1280x800 0 on both. A two-line message still drops to one line when cleared; not in scope. Not checked on a real phone.
+
+## Keep the map still when a two-line progress message clears
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (in the session)
+- scope: lince's finding 1 on PR #19 (https://github.com/olavostauros/lead-finder/pull/19#issuecomment-6146276008). "Buscando “term” no …" (`main.ts:289`) wraps to two lines at 390 px with a long term, sooner at 320 px; when the search ends and clears it (`main.ts:295`), the row drops a line and the map moves up 17.5 px mid-stroke. Keep the map from moving when a status message of any length clears, for example by keeping the progress line to one line with an ellipsis. Out of scope: `#draw-hint`.
+- branch:
+- pr:
+- review:
+- notes:
+
+## Announce a refused area to screen readers
+- state: queued
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (in the session)
+- scope: lince's nit on PR #20 (https://github.com/olavostauros/lead-finder/pull/20#issuecomment-6146281741). `#area-info` (`index.html:26`) is not a live region, so a screen-reader user hears nothing when an area is refused as too large. Make it announce politely (for example `aria-live="polite"`). Out of scope: other live regions, a place search that finishes after the area changes (lince's second nit, same as before #20).
+- branch:
+- pr:
+- review:
+- notes:
