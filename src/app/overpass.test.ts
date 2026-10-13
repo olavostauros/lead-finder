@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { OverpassProvider, buildQuery, elementToLead } from "./overpass";
+import { MAX_RESULTS, OverpassProvider, buildQuery, elementToLead } from "./overpass";
+import type { SearchEvent } from "./types";
 
 const bbox = { south: -23.56, west: -46.66, north: -23.55, east: -46.65 };
 
@@ -125,5 +126,100 @@ describe("OverpassProvider", () => {
     const provider = new OverpassProvider({ fetchFn, sleep: async () => {} });
     await expect(provider.search(area, "padaria")).rejects.toThrow(/400/);
     expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  const fakeClock = () => {
+    let t = 1_000_000;
+    const sleeps: number[] = [];
+    return {
+      sleeps,
+      now: () => t,
+      sleep: async (ms: number) => {
+        sleeps.push(ms);
+        t += ms;
+      },
+      advance: (ms: number) => void (t += ms),
+    };
+  };
+
+  it("says it is waiting during a back-off", async () => {
+    const events: SearchEvent[] = [];
+    const fetchFn = vi
+      .fn()
+      .mockResolvedValueOnce(new Response("", { status: 504 }))
+      .mockResolvedValueOnce(ok());
+    const clock = fakeClock();
+    const provider = new OverpassProvider({ fetchFn, ...clock });
+    await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(events).toEqual([{ kind: "requesting" }, { kind: "waiting", ms: 2000 }, { kind: "requesting" }]);
+  });
+
+  it("keeps the back-off when the user searches again right after giving up", async () => {
+    const fetchFn = vi.fn(async () => new Response("", { status: 429, headers: { "Retry-After": "10" } }));
+    const clock = fakeClock();
+    const provider = new OverpassProvider({ fetchFn, ...clock });
+    await expect(provider.search(area, "padaria")).rejects.toThrow(/ocupado/);
+    expect(fetchFn).toHaveBeenCalledTimes(4);
+
+    clock.advance(4000);
+    fetchFn.mockImplementation(async () => ok());
+    const events: SearchEvent[] = [];
+    await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(events[0]).toEqual({ kind: "waiting", ms: 6000 });
+    expect(clock.sleeps.at(-1)).toBe(6000);
+  });
+
+  it("does not wait on a new search once the back-off has passed", async () => {
+    const fetchFn = vi
+      .fn()
+      .mockResolvedValueOnce(new Response("", { status: 429, headers: { "Retry-After": "1" } }))
+      .mockImplementation(async () => ok());
+    const clock = fakeClock();
+    const provider = new OverpassProvider({ fetchFn, ...clock });
+    await provider.search(area, "padaria");
+    const events: SearchEvent[] = [];
+    await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(events).toEqual([{ kind: "requesting" }]);
+  });
+
+  it("reports a partial list when Overpass hits the result cap", async () => {
+    const elements = Array.from({ length: MAX_RESULTS }, (_, i) => ({
+      type: "node",
+      id: i,
+      lat: -23.555 + i * 1e-3,
+      lon: -46.655,
+      tags: { name: `Lugar ${i}` },
+    }));
+    const fetchFn = vi.fn(async () => new Response(JSON.stringify({ elements }), { status: 200 }));
+    const events: SearchEvent[] = [];
+    const provider = new OverpassProvider({ fetchFn, sleep: async () => {} });
+    await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(events).toContainEqual({ kind: "partial" });
+  });
+
+  it("reports a partial list when a remark comes with some elements", async () => {
+    const partial = { ...body, remark: "runtime error: Query timed out in \"query\" at line 3 after 25 seconds." };
+    const fetchFn = vi.fn(async () => new Response(JSON.stringify(partial), { status: 200 }));
+    const events: SearchEvent[] = [];
+    const provider = new OverpassProvider({ fetchFn, sleep: async () => {} });
+    const leads = await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(leads).toHaveLength(2);
+    expect(events).toContainEqual({ kind: "partial" });
+  });
+
+  it("does not report a complete list as partial", async () => {
+    const events: SearchEvent[] = [];
+    const provider = new OverpassProvider({ fetchFn: async () => ok(), sleep: async () => {} });
+    await provider.search(area, "padaria", { onEvent: (e) => events.push(e) });
+    expect(events).not.toContainEqual({ kind: "partial" });
+  });
+
+  it("gives up on a stalled connection with a pt-BR message", async () => {
+    const fetchFn = vi.fn(
+      (_url: string, init?: RequestInit) =>
+        new Promise<Response>((_, reject) => init?.signal?.addEventListener("abort", () => reject(init.signal?.reason))),
+    );
+    const provider = new OverpassProvider({ fetchFn, sleep: async () => {}, timeoutMs: 10 });
+    await expect(provider.search(area, "padaria")).rejects.toThrow(/não respondeu/);
   });
 });

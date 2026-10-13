@@ -96,7 +96,7 @@ does the rest without being walked through it.
    worktree under `~/agents/<name>/`; the shared checkout stays on `main`.
    Independent agents run in parallel.
 4. *Chain.* The owner files these standing, so the seat writes the entry
-   into the brief and the agent records it on its branch: every builder PR
+   into the brief and the agent records it on its branch: every pull request
    into `main` gets a lince review entry; every merge gets a steward sweep.
    A finding or blocker goes back to the owner as a proposed entry.
    Nothing else starts without him.

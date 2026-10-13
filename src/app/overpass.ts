@@ -1,17 +1,19 @@
 import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
 import { findCategory } from "./categories";
 import { dedupe } from "./dedupe";
-import type { FetchFn } from "./http";
+import { withTimeout, type FetchFn } from "./http";
 import { parsePhoneBR } from "./phone";
 import { sleep as realSleep } from "./throttle";
-import type { Area, BBox, Lead, Provider } from "./types";
+import type { Area, BBox, Lead, Provider, SearchOptions } from "./types";
 
 const ENDPOINT = "https://overpass-api.de/api/interpreter";
 const QUERY_TIMEOUT_S = 25;
-const MAX_RESULTS = 300;
+export const MAX_RESULTS = 300;
 const MAX_RETRIES = 3;
 const MAX_BACKOFF_MS = 30_000;
 const MAX_TERM_LENGTH = 80;
+// Overpass stops at [timeout:25]; leave room for the queue and the transfer.
+const FETCH_TIMEOUT_MS = 40_000;
 
 export interface OverpassElement {
   type: "node" | "way" | "relation";
@@ -76,13 +78,22 @@ export class OverpassProvider implements Provider {
   readonly name = "OpenStreetMap";
   private readonly fetchFn: FetchFn;
   private readonly sleep: (ms: number) => Promise<void>;
+  private readonly now: () => number;
+  private readonly timeoutMs: number;
+  // Shared by every search, so a new search cannot skip a back-off the server asked for.
+  private notBefore = -Infinity;
 
-  constructor(opts: { fetchFn?: FetchFn; sleep?: (ms: number) => Promise<void> } = {}) {
+  constructor(
+    opts: { fetchFn?: FetchFn; sleep?: (ms: number) => Promise<void>; now?: () => number; timeoutMs?: number } = {},
+  ) {
     this.fetchFn = opts.fetchFn ?? ((url, init) => fetch(url, init));
     this.sleep = opts.sleep ?? realSleep;
+    this.now = opts.now ?? Date.now;
+    this.timeoutMs = opts.timeoutMs ?? FETCH_TIMEOUT_MS;
   }
 
-  async search(area: Area, query: string, signal?: AbortSignal): Promise<Lead[]> {
+  async search(area: Area, query: string, opts: SearchOptions = {}): Promise<Lead[]> {
+    const { signal, onEvent } = opts;
     const check = checkArea(area.bbox);
     if (!check.ok) {
       throw new Error(
@@ -92,27 +103,43 @@ export class OverpassProvider implements Provider {
     const body = `data=${encodeURIComponent(buildQuery(area.bbox, query))}`;
 
     for (let attempt = 0; ; attempt++) {
-      const res = await this.fetchFn(ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
+      const wait = this.notBefore - this.now();
+      if (wait > 0) {
+        onEvent?.({ kind: "waiting", ms: wait });
+        await this.sleep(wait);
+        signal?.throwIfAborted();
+      }
+      onEvent?.({ kind: "requesting" });
+      const result = await withTimeout(
+        this.timeoutMs,
         signal,
-      });
-      if (res.ok) {
-        const json = (await res.json()) as { elements?: OverpassElement[]; remark?: string };
-        if (json.remark?.includes("runtime error") && !json.elements?.length) {
+        "O servidor do OpenStreetMap não respondeu a tempo. Tente de novo ou reduza a área.",
+        async (s) => {
+          const res = await this.fetchFn(ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body,
+            signal: s,
+          });
+          if (!res.ok) return res;
+          return (await res.json()) as { elements?: OverpassElement[]; remark?: string };
+        },
+      );
+      if (!(result instanceof Response)) {
+        const elements = result.elements ?? [];
+        if (result.remark?.includes("runtime error") && !elements.length) {
           throw new Error("A consulta demorou demais. Tente uma área menor.");
         }
-        return dedupe((json.elements ?? []).map(elementToLead).filter((l): l is Lead => l !== undefined));
+        if (result.remark || elements.length >= MAX_RESULTS) onEvent?.({ kind: "partial" });
+        return dedupe(elements.map(elementToLead).filter((l): l is Lead => l !== undefined));
       }
-      if (res.status !== 429 && res.status !== 504) {
-        throw new Error(`Erro na consulta ao OpenStreetMap (HTTP ${res.status}).`);
+      if (result.status !== 429 && result.status !== 504) {
+        throw new Error(`Erro na consulta ao OpenStreetMap (HTTP ${result.status}).`);
       }
+      this.notBefore = this.now() + retryDelay(result, attempt);
       if (attempt >= MAX_RETRIES) {
         throw new Error("O servidor do OpenStreetMap está ocupado. Tente de novo em alguns minutos.");
       }
-      await this.sleep(retryDelay(res, attempt));
-      signal?.throwIfAborted();
     }
   }
 }
