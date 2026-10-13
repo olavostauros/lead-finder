@@ -19,7 +19,8 @@ Owns `~/Work/lead-finder/src/`. Builds the client-side lead finder under src/: a
 - Cuts `atlas/<short-topic>` from a synced `main`, implements with tests,
   runs the project's gates, opens a PR into `main`. The owner merges.
 - Implements interfaces the others own; does not change them. A change
-  needed outside `src/` is a queue entry the owner files.
+  needed outside `src/` is a queue entry the owner files; a new file in
+  `docs/` is the one exception (Tier 1).
 
 ## Identity, as of 2026-10-09
 

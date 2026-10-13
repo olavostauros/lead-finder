@@ -49,7 +49,8 @@ wakes. What it keeps true, in order:
 - **What needs the owner.** Reported plainly, in the session, at the end of
   every sweep. Never a quietly dropped `WARN` or `FAIL`.
 
-Everything steward may touch is `~/Work/lead-finder/leads/notes/` and its own home.
+Everything steward may touch is `~/Work/lead-finder/leads/notes/`, a new
+file in `~/Work/lead-finder/docs/`, and its own home.
 It never edits code, the contract, the roster, the hooks or a definition —
 those are findings for [[lab-backlog]].
 

@@ -168,9 +168,12 @@ No approval needed. Do it on a branch, commit it, report it.
 
 - Code, tests and docs under your own directory, on a topic branch, as the
   work the queue entry asks for. An agent that owns no directory has no Tier
-  1 in the code: its free changes are the next three lines.
+  1 in the code: its free changes are the next four lines.
 - Any note in `notes/` that states something you have **verified** is false —
   fix the fact and say what the evidence was.
+- A **new** file in `~/Work/lead-finder/docs/` (a decision or a note), on a
+  topic branch. Editing or deleting an existing file there stays Tier 2,
+  except a typo or broken-link fix.
 - Entries in [[lab-backlog]] and [[work-queue]]: adding, re-ranking,
   correcting, marking done.
 - Your own scratchpad and session log in your home repo.
@@ -189,9 +192,10 @@ tells you to.
 - `hooks/*`, `.mise/*` and `roster.tsv` — the guard, the task surface, and
   who counts as an agent.
 - Anything in the work tree **outside** your own directory and this
-  lab's — each agent's directory is the others' Tier 2. For an agent
-  that owns nothing, every directory is Tier 2: a fix it wants is a finding
-  or a queue entry for the owner, never a code branch of its own.
+  lab's, other than a new file in `docs/` — each agent's directory is the
+  others' Tier 2. For an agent that owns nothing, every directory is Tier 2
+  but that one exception: a fix it wants is a finding or a queue entry for
+  the owner, never a code branch of its own.
 - Anything that changes what another agent is allowed to do.
 - Anything that changes how identity, credentials, or signing work.
 
