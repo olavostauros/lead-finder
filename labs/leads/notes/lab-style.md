@@ -89,7 +89,7 @@ does the rest without being walked through it.
    from anywhere:
 
    ```
-   eval "$(mise -C ~/Work/lead-finder/leads run -q agent-env <name>)" && [ "$GIT_AUTHOR_NAME" = <name> ]
+   eval "$(mise -C ~/Work/lead-finder/labs/leads run -q agent-env <name>)" && [ "$GIT_AUTHOR_NAME" = <name> ]
    ```
 
    It works in a

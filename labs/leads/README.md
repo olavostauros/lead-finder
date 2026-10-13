@@ -22,7 +22,7 @@ addressed to one agent, and that agent takes it from the top.
 ## Usage
 
 ```bash
-cd ~/Work/lead-finder/leads
+cd ~/Work/lead-finder/labs/leads
 mise run welcome                       # orientation and setup health
 mise run test                          # lab checks
 mise run install-hooks                 # commit guard for the work tree
