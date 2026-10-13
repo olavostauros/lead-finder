@@ -151,3 +151,9 @@ Entry shape:
   ```
 - needs: nothing; applied.
 - status: applied by the owner's seat in lince's home as `671f897` (2026-10-13 09:12 -03, the owner's, unsigned, `%G?` = `N`), the first of lince's two fixes ("drop the line"), not a change to `leads/AGENTS.md`. Checked by steward in `~/agents/lince/home` on 2026-10-13: step 6 says the `+` text. That home is local and private, so this entry is the lab's record of it.
+
+### Grant the owner's seat its loop as loosening 1
+- filed: 2026-10-13 by olavostauros (in the session, item 1 of an audit of the lab's docs)
+- why: the seat's memory held a standing grant ("merge once lince has no blocking finding", among others) that the contract did not: "The owner's seat" said an earlier "yes" does not carry, and the loosenings table was empty. The owner chose to put the grant in the contract.
+- diff: PR #18 (`owner/seat-loosening`): row 1 of the loosenings table; "The owner's seat" defers to the table for standing grants; the Chain step in [[lab-style]], "Who lives here", `notes/steward.md` and the lab README say the seat may push steward's branches under it. After lince's review at `32d2531` (comment 6145794986): the row excludes PRs that touch a Tier 2 item, [[lab-style]] or the table, defines "lab follow-up", and ties a merge to lince's review at the PR's current head.
+- needs: the owner merges PR #18 himself, since it changes the contract.
