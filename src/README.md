@@ -21,6 +21,8 @@ npm run build      # typecheck + static build into src/dist/
 - `app/area.ts` — area size and the cap (`MAX_AREA_KM2`).
 - `app/phone.ts` — Brazilian phone formatting and `wa.me` links for mobiles.
 - `app/categories.ts` — pt-BR categories mapped to OSM tags.
+- `app/draw.ts` — the draw-mode gesture: one pointer, tap or rectangle, the
+  start kept as a map coordinate so a zoom cannot move it.
 - `app/main.ts` — the UI: map, area drawing, search, table and pins.
 
 The project lives under `src/` because `src/` is atlas's directory in the

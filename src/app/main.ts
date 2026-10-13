@@ -3,7 +3,7 @@ import "leaflet/dist/leaflet.css";
 import "./style.css";
 import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
-import { RectGesture, type Point } from "./draw";
+import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
 import { OverpassProvider } from "./overpass";
 import type { Area, BBox, Lead, Provider } from "./types";
@@ -41,10 +41,6 @@ const toBBox = (b: L.LatLngBounds): BBox => ({
 
 function setArea(bbox: BBox, label?: string): boolean {
   const check = checkArea(bbox);
-  if (check.km2 === 0) {
-    status("A área desenhada está vazia: arraste no mapa para desenhar um retângulo.", true);
-    return false;
-  }
   areaLayer.clearLayers();
   if (!check.ok) {
     area = undefined;
@@ -66,20 +62,21 @@ function setArea(bbox: BBox, label?: string): boolean {
 function startDrawing() {
   const container = map.getContainer();
   const button = $<HTMLButtonElement>("draw");
-  const gesture = new RectGesture();
+  const gesture = new RectGesture<L.LatLng>((ll) => map.latLngToContainerPoint(ll));
   const hint = "Arraste no mapa para desenhar a área.";
   let preview: L.Rectangle | undefined;
 
   const point = (e: PointerEvent): Point => map.mouseEventToContainerPoint(e);
-  const bounds = (a: Point, b: Point) =>
-    L.latLngBounds(map.containerPointToLatLng([a.x, a.y]), map.containerPointToLatLng([b.x, b.y]));
+  const bounds = (start: L.LatLng, end: Point) => L.latLngBounds(start, map.containerPointToLatLng([end.x, end.y]));
   const clearPreview = () => {
     preview?.remove();
     preview = undefined;
   };
 
   const onDown = (e: PointerEvent) => {
-    if (gesture.down(e, point(e))) container.setPointerCapture(e.pointerId);
+    // Capturing a press on a control would swallow its click: "+", "−" and the attribution link.
+    if (e.target instanceof Element && e.target.closest(".leaflet-control-container")) return;
+    if (gesture.down(e, map.mouseEventToLatLng(e))) container.setPointerCapture(e.pointerId);
   };
   const onMove = (e: PointerEvent) => {
     const stroke = gesture.move(e.pointerId, point(e));
@@ -110,24 +107,24 @@ function startDrawing() {
 
   function stop() {
     clearPreview();
+    restoreMap();
     container.removeEventListener("pointerdown", onDown);
     container.removeEventListener("pointermove", onMove);
     container.removeEventListener("pointerup", onUp);
     container.removeEventListener("pointercancel", onCancel);
     document.removeEventListener("keydown", onKey);
     container.classList.remove("drawing");
-    map.dragging.enable();
     button.textContent = "Desenhar área";
     status("");
     stopDrawing = undefined;
   }
 
+  const restoreMap = suspend([map.dragging, map.touchZoom, map.doubleClickZoom, map.scrollWheelZoom, map.boxZoom]);
   container.addEventListener("pointerdown", onDown);
   container.addEventListener("pointermove", onMove);
   container.addEventListener("pointerup", onUp);
   container.addEventListener("pointercancel", onCancel);
   document.addEventListener("keydown", onKey);
-  map.dragging.disable();
   container.classList.add("drawing");
   button.textContent = "Cancelar desenho";
   status(hint);
@@ -144,6 +141,7 @@ function showPlaces(places: Place[]) {
     button.textContent = place.label;
     button.addEventListener("click", () => {
       list.hidden = true;
+      stopDrawing?.();
       const b = place.bbox;
       map.fitBounds([
         [b.south, b.west],
@@ -218,7 +216,10 @@ $<HTMLDataListElement>("categories").append(
 );
 
 $("draw").addEventListener("click", () => (stopDrawing ? stopDrawing() : startDrawing()));
-$("use-view").addEventListener("click", () => setArea(toBBox(map.getBounds()), "visível no mapa"));
+$("use-view").addEventListener("click", () => {
+  stopDrawing?.();
+  setArea(toBBox(map.getBounds()), "visível no mapa");
+});
 
 $("place-form").addEventListener("submit", async (e) => {
   e.preventDefault();
