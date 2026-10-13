@@ -397,7 +397,10 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - scope: lince's low finding on PR #26 (https://github.com/olavostauros/lead-finder/pull/26#issuecomment-6146658793). `#status` reserves its height in `em` but switches from two lines to three at `max-width: 359px` (`src/app/style.css:115` on `c0570d5`), so with text-only scaling at 130% the longest search error wraps to three lines at 360, 375 and 390 px where two are reserved, and the map still moves 22.75 px. Make the breakpoint follow the text size, for example `max-width: 22.5em`, and keep the CSS comment at `:108` true. Out of scope: the desktop layout, `#draw-hint`, the one-line progress rule.
 
 ## Stop the browser asking for /favicon.ico at the origin root
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
 - scope: lince's nit on PR #15, the Pages deploy (https://github.com/olavostauros/lead-finder/pull/15#issuecomment-6145628481). The app is served under `/lead-finder/` and declares no icon, so every load asks for `/favicon.ico` at the origin root and gets a 404. Declare an icon in `src/index.html` that the build serves under the app's own base path, with no new runtime dependency. Out of scope: an app manifest, touch icons beyond what one `<link rel="icon">` needs.
+- branch: `atlas/favicon` (`0408959`) — base `main` (`4f8f0e4`)
+- pr: https://github.com/olavostauros/lead-finder/pull/33
+- notes: 2026-10-13 atlas. `src/app/favicon.svg`, a map pin, linked from `index.html` as `./app/favicon.svg`; Vite emits it as `./assets/favicon-<hash>.svg`, so it is served under the base path. The `href` must stay relative: `index-html.test.ts` checks it. Built `dist/` of `main` and the branch, each served under `/lead-finder/` on a fresh origin, headless Chromium, server log: `main` asked `GET /favicon.ico` (404); the branch fetched only its own icon (200), no root request. Not checked on Pages, Firefox or Safari; Safari before 26 ignores SVG icons and may still ask the root.
