@@ -30,10 +30,11 @@ const pinLayer = L.layerGroup().addTo(map);
 let area: Area | undefined;
 let stopDrawing: (() => void) | undefined;
 
-const status = (msg: string, error = false) => {
+const status = (msg: string, tone?: "error" | "progress") => {
   const el = $("status");
   el.textContent = msg;
-  el.classList.toggle("error", error);
+  el.classList.toggle("error", tone === "error");
+  el.classList.toggle("progress", tone === "progress");
 };
 
 // Draw mode has its own line: on #status it would hide a search's progress, and clearing it would erase the outcome.
@@ -263,13 +264,13 @@ $("place-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const button = $<HTMLButtonElement>("place-form").querySelector("button")!;
   button.disabled = true;
-  status("Procurando lugar…");
+  status("Procurando lugar…", "progress");
   try {
     const places = await geocoder.search($<HTMLInputElement>("place").value);
     showPlaces(places);
     status(places.length ? "" : "Nenhum lugar encontrado.");
   } catch (err) {
-    status(err instanceof Error ? err.message : "Falha na busca de lugares.", true);
+    status(err instanceof Error ? err.message : "Falha na busca de lugares.", "error");
   } finally {
     button.disabled = false;
   }
@@ -278,8 +279,8 @@ $("place-form").addEventListener("submit", async (e) => {
 $("search-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const term = $<HTMLInputElement>("term").value.trim();
-  if (!area) return status("Escolha uma área primeiro.", true);
-  if (!term) return status("Informe o que procurar.", true);
+  if (!area) return status("Escolha uma área primeiro.", "error");
+  if (!term) return status("Informe o que procurar.", "error");
 
   if (runner.busy) return;
   const button = $<HTMLButtonElement>("search-form").querySelector<HTMLButtonElement>("button[type=submit]")!;
@@ -288,14 +289,14 @@ $("search-form").addEventListener("submit", async (e) => {
   cancel.hidden = false;
   try {
     const outcome = await runner.run(area, term, (event) => {
-      if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
+      if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`, "progress");
       else if (event.kind === "waiting")
-        status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
+        status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`, "progress");
     });
     if (outcome.kind === "done") {
       renderLeads(outcome.leads, outcome.partial);
       status("");
-    } else if (outcome.kind === "failed") status(outcome.message, true);
+    } else if (outcome.kind === "failed") status(outcome.message, "error");
     else if (outcome.reason === "area") status("A área mudou, então a busca anterior foi cancelada. Busque de novo.");
     else status("Busca cancelada.");
   } finally {

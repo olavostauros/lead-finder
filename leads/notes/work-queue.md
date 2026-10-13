@@ -257,14 +257,14 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: 2026-10-13 atlas. `#status` gets `line-height: 1.25; min-height: 1.25em` (not `1lh`, for Safari before 16.4). CDP check, main vs branch, `#status` filled then emptied: 390x844 map moved 16 px on main, 0 on the branch; 1280x800 0 on both. A two-line message still drops to one line when cleared; not in scope. Not checked on a real phone.
 
 ## Keep the map still when a two-line progress message clears
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's finding 1 on PR #19 (https://github.com/olavostauros/lead-finder/pull/19#issuecomment-6146276008). "Buscando “term” no …" (`main.ts:289`) wraps to two lines at 390 px with a long term, sooner at 320 px; when the search ends and clears it (`main.ts:295`), the row drops a line and the map moves up 17.5 px mid-stroke. Keep the map from moving when a status message of any length clears, for example by keeping the progress line to one line with an ellipsis. Out of scope: `#draw-hint`.
-- branch:
-- pr:
+- branch: `atlas/status-oneline` (`717092f`), base `main` (`c37eb20`)
+- pr: https://github.com/olavostauros/lead-finder/pull/23
 - review:
-- notes:
+- notes: 2026-10-13 atlas. `status()` takes a tone, `"error"` or `"progress"`; `#status.progress` is one line with an ellipsis (`white-space: nowrap; overflow: hidden; text-overflow: ellipsis`). The full text stays in the DOM, so the live region still reads all of it. Errors and outcomes still wrap: they are cleared only by the user (a new area, a new search), not mid-stroke. CDP check, built main vs branch, Overpass request held with the term "loja de material de construção", then answered empty: 390 and 320 px map moved 17.5 px on main, 0 on the branch; 1280 px 0 on both; no horizontal page overflow. Seen, not in scope: a progress line replaced mid-stroke by a long error ("O servidor do OpenStreetMap está ocupado…") can still grow the row by a line. Not checked on a real phone.
 
 ## Announce a refused area to screen readers
 - state: pr-open
