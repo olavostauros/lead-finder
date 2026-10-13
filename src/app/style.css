@@ -104,6 +104,12 @@ button:disabled {
   color: var(--error);
 }
 
+/* Emptied mid-stroke, a collapsing #status would move the map under the finger and stretch the drawn rectangle. */
+#status {
+  line-height: 1.25;
+  min-height: 1.25em;
+}
+
 .map {
   height: 55vh;
   min-height: 280px;

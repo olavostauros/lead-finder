@@ -247,11 +247,11 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes:
 
 ## Reserve the status line's height so the map does not move mid-stroke
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's opinion on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353), already on `main` before #14. A search that ends during a stroke empties `#status`, its row collapses, and the map moves up 16 px under the finger; the drawn rectangle then grows 16 px, because the stroke's start is a map coordinate and its end a container point. Give `#status` a reserved one-line height so the map does not move when it empties. Out of scope: `#draw-hint` and its own layout shift when draw mode starts or after a tap, which happen outside a stroke.
-- branch:
-- pr:
+- branch: `atlas/status-height` (`5978a2b`), base `main` (`24a15fd`)
+- pr: https://github.com/olavostauros/lead-finder/pull/19
 - review:
-- notes:
+- notes: 2026-10-13 atlas. `#status` gets `line-height: 1.25; min-height: 1.25em` (not `1lh`, for Safari before 16.4). CDP check, main vs branch, `#status` filled then emptied: 390x844 map moved 16 px on main, 0 on the branch; 1280x800 0 on both. A two-line message still drops to one line when cleared; not in scope. Not checked on a real phone.
