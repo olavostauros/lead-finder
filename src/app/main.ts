@@ -244,7 +244,7 @@ $("use-view").addEventListener("click", () => {
   const fittedOk = setArea(
     fitted,
     "centro do mapa",
-    `A área visível tem ${formatKm2(areaKm2(view))} e passa do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
+    `A área que estava visível tinha ${formatKm2(areaKm2(view))}, acima do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
   );
   // A fitted box can fill the map to its edge, where it reads as the map's border and the controls cover its corners.
   if (fittedOk)
