@@ -60,11 +60,11 @@ Entry shape:
 - notes: Both halves of finding 1 are in: Buscar is disabled while a search runs, and the provider keeps its back-off deadline across searches, so a search right after "ocupado" still waits. `Provider.search` takes `{ signal, onEvent }` instead of a bare signal; events are `requesting`, `waiting` and `partial`, so the return stays `Lead[]`. Client timeouts: Overpass 40 s (server `[timeout:25]` plus queue and transfer), Nominatim 10 s, counted from when the throttle lets the request go. Not verified against live Overpass/Nominatim, in a browser or on a phone. Conflicts with #6 (`atlas/touch-drawing`) after either merges: both edit `src/app/main.ts` and this file.
 
 ## Let a search be cancelled, and keep its results with its own area
-- state: in-progress
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's review of PR #5, findings 1 and 2 (https://github.com/olavostauros/lead-finder/pull/5#issuecomment-6144539851). A "Cancelar" control during a search aborts it through `SearchOptions.signal`, a 429 back-off included; results whose area no longer matches the current one are dropped or labelled. `withTimeout` falls back to a plain `AbortController` when `AbortSignal.any` is missing (Safari/iOS 16.4, Chrome 111, Firefox 114), with a test that deletes `AbortSignal.any`. Out of scope: draw mode (PR #6), CSV export, and lince's labelled opinions.
-- branch: `atlas/search-cancel` — base `main` (`477ae5e`)
-- pr:
+- branch: `atlas/search-cancel` (`9a67a05`) — base `main` (`477ae5e`)
+- pr: https://github.com/olavostauros/lead-finder/pull/9
 - review:
-- notes:
+- notes: Cancelar aborts through `SearchOptions.signal`, the back-off wait included (`sleep(ms, signal)`); choosing a new area cancels too. The keep-or-drop decision is `SearchRunner` in `src/app/search-run.ts`, so it is unit-tested; a cancelled search never renders, even if the provider resolves anyway. The back-off deadline survives a cancel. `withTimeout` falls back to a plain `AbortController` without `AbortSignal.any`. Gap: results from an already finished search still stay in the table after a new area is picked; not in this entry. Also pinned the clock in a flaky 429 test that is on `main` too. Not verified in a browser, on a phone, on real Safari 16, or against live servers. Conflicts with #6 (`atlas/touch-drawing`, `209e63c`) in `src/app/main.ts` (one hunk) and this file.
