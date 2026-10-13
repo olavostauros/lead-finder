@@ -400,4 +400,4 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - state: queued
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
-- scope: lince's nit on PR #14 (the Pages deploy). The app is served under `/lead-finder/` and declares no icon, so every load asks for `/favicon.ico` at the origin root and gets a 404. Declare an icon in `src/index.html` that the build serves under the app's own base path, with no new runtime dependency. Out of scope: an app manifest, touch icons beyond what one `<link rel="icon">` needs.
+- scope: lince's nit on PR #15, the Pages deploy (https://github.com/olavostauros/lead-finder/pull/15#issuecomment-6145628481). The app is served under `/lead-finder/` and declares no icon, so every load asks for `/favicon.ico` at the origin root and gets a 404. Declare an icon in `src/index.html` that the build serves under the app's own base path, with no new runtime dependency. Out of scope: an app manifest, touch icons beyond what one `<link rel="icon">` needs.
