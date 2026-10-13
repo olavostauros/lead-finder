@@ -16,3 +16,11 @@ setup() {
   run mise run -q agent-env nobody-here
   [ "$status" -ne 0 ]
 }
+
+@test "agent-env turns off commit and tag signing" {
+  repo="$BATS_TEST_TMPDIR/repo"
+  git init -q "$repo"
+  eval "$(mise run -q agent-env "$(awk -F '\t' '!/^#/ && NF { print $1; exit }' "$ROSTER")")"
+  [ "$(git -C "$repo" config --get commit.gpgsign)" = "false" ]
+  [ "$(git -C "$repo" config --get tag.gpgsign)" = "false" ]
+}
