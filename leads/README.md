@@ -12,7 +12,7 @@ on 2026-10-09, at 80ed4c5.
 See `roster.tsv` and the "Who lives here" section of `AGENTS.md`. Add an
 agent with `lab agent add <name> --lab . --role <role> [--owns <dir>/]`.
 
-Builders work on `<name>/<topic>` branches and open pull requests into
+Agents work on `<name>/<topic>` branches and open pull requests into
 `main`; none merges. The owner files work into `notes/work-queue.md`,
 addressed to one agent, and that agent takes it from the top.
 
