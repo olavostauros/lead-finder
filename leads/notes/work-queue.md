@@ -3,7 +3,7 @@ title: work-queue
 tags: [queue]
 related: [lab-backlog]
 created: 2026-10-09
-updated: 2026-10-09
+updated: 2026-10-13
 ---
 
 # Work queue
@@ -48,3 +48,13 @@ Entry shape:
 - pr:
 - review:
 - notes:
+
+## Fix rectangle drawing on touch
+- state: pr-open
+- agent: atlas
+- filed: 2026-10-13 by olavostauros (in the session)
+- scope: lince's review of PR #1, findings 3 and 4 (https://github.com/olavostauros/lead-finder/pull/1#issuecomment-6089895771). A tap without a drag in draw mode does not report "Área grande demais (0 km²)" and does not clear the previous area: treat a zero-area draw as cancelled or as a distinct pt-BR message. Handle `pointercancel`, ignore pointers other than the first, and add a way to cancel draw mode. Out of scope: anything outside drawing.
+- branch: `atlas/touch-drawing` (`1afd57f`) — base `main` (`3c1e9b3`)
+- pr: https://github.com/olavostauros/lead-finder/pull/6
+- review:
+- notes: The pointer logic moved into `src/app/draw.ts` (`RectGesture`, pure, unit-tested); `main.ts` only maps it to Leaflet. A release under 8 px on either side is a tap: draw mode stays on with a pt-BR hint and the previous area is kept. `pointercancel` drops the stroke and keeps draw mode on. Only the primary pointer with the main button starts a stroke; other pointers are ignored until it ends. While drawing, "Desenhar área" becomes "Cancelar desenho"; Escape also cancels. `setArea` reports a 0 km² box with its own message and keeps the previous area, as a backstop. Not verified on a real touch device or in a browser. Conflicts with #5 (`atlas/search-robustness`) after either merges: both edit `src/app/main.ts` and this file.
