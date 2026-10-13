@@ -174,37 +174,45 @@ Entry shape:
   +has no PR. None merges. The owner files work into `notes/work-queue.md`,
   +addressed to one agent, and that agent takes it from the top.
   ```
-  and in `leads/AGENTS.md`:
+  and in `leads/AGENTS.md` (exact, the paragraph's tail rewrapped so no short line is left):
   ```
    [the loosenings](#the-loosenings) grants the seat a standing one. Its
   -commits use `LEADS_OWNER_COMMIT=1` and are unsigned (`git -c commit.gpgsign=false`); it
   -never signs with the owner's key. It never puts `LEADS_OWNER_COMMIT` in a
+  -subagent's environment or brief, and never relays the owner's approval: an
+  -agent checks a decision where it landed on `main`, not in a message.
   +commits use `LEADS_OWNER_COMMIT=1` and are unsigned
   +(`git -c commit.gpgsign=false`); it never signs with the owner's key. It
-  +never puts `LEADS_OWNER_COMMIT` in a
+  +never puts `LEADS_OWNER_COMMIT` in a subagent's environment or brief, and
+  +never relays the owner's approval: an agent checks a decision where it
+  +landed on `main`, not in a message.
   ```
 - needs: the owner applies it in his own turn; it touches `leads/AGENTS.md` and the README, so row 1 does not cover it.
 
-### Say whose Tier 2 row 1's exclusion means
-- filed: 2026-10-13 by steward, from lince's finding H in its second review of PR #18 (comment 6145856316)
-- why: row 1 (`leads/AGENTS.md:241` on `bb1f040`) excludes "a PR that touches a Tier 2 item", but Tier 2 is written per agent ("outside your own directory"), and the seat owns no directory and has no Tier 1. A strict reader finds every PR is Tier 2 for the seat, so the merge grant never applies; a loose one reads an atlas PR under `src/` as Tier 1 for atlas. The exclusion holds under either reading; only the merge grant's reach is unclear. Since row 1, the seat has merged #19 to #24 on lince's verdicts, reading it the loose way.
-- diff, in row 1 of the loosenings table:
+### Say whose Tier 2 row 1's exclusion means, and keep identity in it
+- filed: 2026-10-13 by steward, from lince's finding H in its second review of PR #18 (comment 6145856316); amended 2026-10-13 by steward, from lince's medium finding 1 on PR #27 (comment 6146628181)
+- why: row 1 (`leads/AGENTS.md:241` on `b9240c5`) excludes "a PR that touches a Tier 2 item", but Tier 2 is written per agent ("outside your own directory"), and the seat owns no directory and has no Tier 1. A strict reader finds every PR is Tier 2 for the seat, so the merge grant never applies; a loose one reads an atlas PR under `src/` as Tier 1 for atlas and so mergeable. After row 1 landed (#18, 10:03 -03), #19 to #25 and #27 were merged by the `olavostauros` login, the agents' PRs among them, which is the loose reading. GitHub shows only that login, so which of those merges were the seat's under row 1 and which the owner's own cannot be told from GitHub; only #21's PR body says "under loosening row 1". The first draft of this entry tied the exclusion to "a Tier 2 item for the PR's author" plus a list of paths. lince found the hole (PR #27, finding 1): the seat commits as the owner, who is not an agent and has no tiers, so for a seat PR that clause matched nothing, and a seat follow-up under `leads/notes/` that widened `notes/atlas.md` would have been mergeable on lince's verdict alone. Today that change is kept out only as "anything that changes what another agent is allowed to do" (lince's review A of #18). The diff below keeps it out by name: it lists identity notes and the two "anything that changes…" items of Tier 2, and reads a PR authored as the owner as if its author owned no directory.
+- what it widens: against the strict reading, it lets the seat merge, on lince's clean verdict, an agent's PR that stays inside that agent's Tier 1 (atlas under `src/`, steward under `leads/notes/`). That is a widening of the merge grant, not a pure clarification, and it is the reading the merges since row 1 already took. Against the loose reading it narrows nothing and widens nothing: every item the loose reading excluded stays excluded, and the identity, credential and signing items are now named instead of inferred.
+- diff, in row 1 of the loosenings table (the row is one table line; only this sentence changes, and the new text stays on that line):
   ```
-  -A PR that touches a Tier 2 item, [[lab-style]] or this table is not a follow-up
-  +A PR that touches a Tier 2 item for the PR's author, or `leads/AGENTS.md`, `hooks/*`, `.mise/*`, `roster.tsv`, [[lab-style]] or this table, is not a follow-up
+  -A PR that touches a Tier 2 item, [[lab-style]] or this table is not a follow-up and is not merged under this row: the owner approves it in his own turn.
+  +A PR that touches a Tier 2 item for any author of its commits (a commit authored as the owner counts as an agent's that owns no directory), `leads/AGENTS.md`, `hooks/*`, `.mise/*`, `roster.tsv`, an identity note (`leads/notes/<agent>.md`), [[lab-style]] or this table, or that changes what an agent is allowed to do or how identity, credentials or signing work, is not a follow-up and is not merged under this row: the owner approves it in his own turn.
   ```
-  (the row is one table line; only these words change.)
 - needs: the owner decides and applies it in his own turn; it changes the loosenings table.
 
 ### Let atlas's Stance name the docs/ exception
 - filed: 2026-10-13 by steward, from lince's finding E in its second review of PR #17 (comment 6145855925)
 - why: `notes/atlas.md:22-23` on `main` (`bb1f040`) makes a new file in `docs/` atlas's one exception, but its Stance, `:37-38`, still says the smallest diff is "under `src/` and nowhere else". Atlas asked to record a decision with a fix would follow the narrower line and stop. It widens what atlas may do, so it is Tier 2 to steward, not a fact fix.
-- diff, in `leads/notes/atlas.md`:
+- diff, in `leads/notes/atlas.md` (exact, the paragraph rewrapped at 80 columns or less):
   ```
    watch fail is a claim, not a fix. The smallest diff that answers the entry,
   -under `src/` and nowhere else; a change that wants to reach further is
+  -a finding for the owner, not a wider branch. A PR body says what changed,
+  -why, and what was run, and names any gate that was not. Narrowing this
+  -stance is atlas's; widening it is the owner's.
   +under `src/` and nowhere else but a new file in `docs/`; a change that
-  +wants to reach further is
+  +wants to reach further is a finding for the owner, not a wider branch. A
+  +PR body says what changed, why, and what was run, and names any gate that
+  +was not. Narrowing this stance is atlas's; widening it is the owner's.
   ```
-  with the rest of the paragraph rewrapped.
 - needs: the owner applies it in his own turn; atlas's home (`~/agents/atlas/home/AGENTS.md:81`) still confines atlas to `src/` and `leads/notes/` either way.
