@@ -18,9 +18,29 @@ setup() {
 }
 
 @test "agent-env turns off commit and tag signing" {
+  # Start from a shell with signing on and no inherited GIT_CONFIG_*, so the
+  # test fails if agent-env stops turning signing off.
+  unset GIT_CONFIG_COUNT GIT_CONFIG_KEY_0 GIT_CONFIG_VALUE_0 GIT_CONFIG_KEY_1 GIT_CONFIG_VALUE_1
+  export HOME="$BATS_TEST_TMPDIR" GIT_CONFIG_NOSYSTEM=1
+  git config --global commit.gpgsign true
+  git config --global tag.gpgsign true
+  git config --global gpg.program false
   repo="$BATS_TEST_TMPDIR/repo"
   git init -q "$repo"
+  run git -C "$repo" commit -q --allow-empty -m control
+  [ "$status" -ne 0 ]
+
   eval "$(mise run -q agent-env "$(awk -F '\t' '!/^#/ && NF { print $1; exit }' "$ROSTER")")"
-  [ "$(git -C "$repo" config --get commit.gpgsign)" = "false" ]
-  [ "$(git -C "$repo" config --get tag.gpgsign)" = "false" ]
+  git -C "$repo" commit -q --allow-empty -m signed-off
+  [ "$(git -C "$repo" log -1 --format=%G?)" = "N" ]
+  git -C "$repo" tag -a -m t t1
+  ! git -C "$repo" cat-file tag t1 | grep -q 'BEGIN PGP'
+}
+
+@test "agent-env keeps GIT_CONFIG_* already in the shell" {
+  export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0=/kept
+  eval "$(mise run -q agent-env "$(awk -F '\t' '!/^#/ && NF { print $1; exit }' "$ROSTER")")"
+  [ "$GIT_CONFIG_COUNT" = 3 ]
+  [ "$(git config --get core.hooksPath)" = /kept ]
+  [ "$(git config --get commit.gpgsign)" = false ]
 }

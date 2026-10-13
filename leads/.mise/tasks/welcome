@@ -51,8 +51,8 @@ if [ "$(git -C "$WORK_DIR" config --type=bool commit.gpgsign 2>/dev/null)" = tru
   format="$(git -C "$WORK_DIR" config gpg.format 2>/dev/null || echo openpgp)"
   key="$(git -C "$WORK_DIR" config user.signingkey 2>/dev/null || echo "unset; picked by the committer identity")"
   echo "commits here: signed ($format, key $key)"
-  echo "agent-env sets the author only: a commit made as an agent is signed with this same key and verifies as its holder, not as the agent"
-  echo "a passphrase prompt during a commit is for this key; if it stalls, stop and report — never turn signing off"
+  echo "agent-env turns signing off for agents: a commit made after agent-env is unsigned"
+  echo "a passphrase prompt during an agent's commit means agent-env was not run in that shell; stop and report"
 else
   echo "commits here: unsigned"
 fi

@@ -50,10 +50,10 @@ When they are signed, expect three things:
   key.** The dialog is GnuPG's: it names the key and not the terminal that
   asked. `lab init` says so before its bootstrap commit; nothing else
   in the lab opens one on its own.
-- **An agent's commit is signed with the owner's key.** `agent-env` sets
-  the author and committer only, so a commit made as an agent is authored
-  by the agent and verifies as the owner. Per-agent keys are the backlog
-  entry in `notes/lab-backlog.md`, not a switch.
+- **An agent's commit is unsigned.** `agent-env` sets the author and
+  committer and turns off commit and tag signing, so the owner's key signs
+  only the owner's commits. Per-agent keys are the backlog entry in
+  `notes/lab-backlog.md`, not a switch.
 - **The prompt repeats.** With no `~/.gnupg/gpg-agent.conf`, gpg-agent
   caches a passphrase for 10 minutes and drops it after 2 hours, so a long
   session asks more than once. A longer `default-cache-ttl` and
@@ -61,8 +61,9 @@ When they are signed, expect three things:
   it; both are machine setup, outside the lab.
 
 To stop signing for this repository alone: `git -C ~/Work/lead-finder config
-commit.gpgsign false`, in the owner's own turn. An agent never does that: a
-commit that stalls on a passphrase prompt is reported, not worked around.
+commit.gpgsign false`, in the owner's own turn. Agents don't need it: `agent-env` already
+turns signing off. An agent's commit that asks for a passphrase was made
+without `agent-env`; it is reported, not worked around.
 
 ## What is not here yet
 
