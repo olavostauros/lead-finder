@@ -86,8 +86,13 @@ does the rest without being walked through it.
    <date> by <owner> (in the session)`. Nothing he did not ask for.
 3. *Delegate.* One subagent per agent, briefed with its name, the entry,
    the branch and what blocks it. It activates and checks identity first,
-   from anywhere: `eval "$(mise -C ~/Work/lead-finder/leads run -q
-   agent-env <name>)" && [ "$GIT_AUTHOR_NAME" = <name> ]`. It works in a
+   from anywhere:
+
+   ```
+   eval "$(mise -C ~/Work/lead-finder/leads run -q agent-env <name>)" && [ "$GIT_AUTHOR_NAME" = <name> ]
+   ```
+
+   It works in a
    worktree under `~/agents/<name>/`; the shared checkout stays on `main`.
    Independent agents run in parallel.
 4. *Chain.* The owner files these standing, so the seat writes the entry

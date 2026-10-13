@@ -50,4 +50,3 @@ Entry shape:
 - why: "Who are you?" made the session the owner types into ask which agent it was. On 2026-10-13 the owner ran the loop by hand (orient, file, delegate, chain, relay) and asked in his own turn for it to be taught to the contract and the agents.
 - diff: PR #4 (`owner/session-loop`): split the unset-identity case in "Who are you?"; add "The owner's seat" (authority) to `leads/AGENTS.md` with a Read-first row; add the loop to `notes/lab-style.md`.
 - needs: the owner merges PR #4.
-- status: approved by the owner in his own turn on 2026-10-13; lince's review of `6d0fb4e` addressed in the next commit on the branch.
