@@ -58,6 +58,8 @@ function clearResults() {
 
 function setArea(bbox: BBox, label?: string, note?: string): boolean {
   runner.cancel("area");
+  // A running search reports "A área mudou…" after this returns, so this does not erase it.
+  status("");
   // Results on screen belong to the area being left; they must not sit under the new label.
   clearResults();
   const check = checkArea(bbox);

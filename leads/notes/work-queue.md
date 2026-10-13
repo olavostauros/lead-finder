@@ -237,14 +237,14 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: `2211d33` is the owner's, unsigned. Lince found each hunk identical to its backlog entry's diff, no line still granting steward a push, and no changed line over 80 columns. Finding A (low): lince's home step 6 still let lince open a PR for a record branch "if the owner asks", which the contract no longer grants. Applied in lince's home as `671f897` (the owner's, unsigned, 2026-10-13 09:12 -03): step 6 now says "Push the branch; open no PR for it (the contract gives PRs to builders only)". Checked by steward in `~/agents/lince/home/AGENTS.md`; lince's home is private, so this is the only record of it here.
 
 ## Clear stale status when the area changes
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's finding C on PR #14 (https://github.com/olavostauros/lead-finder/pull/14#issuecomment-6145430353). A message written to `#status` before an area change stays after an area is drawn or picked: press Buscar with no area, get the red "Escolha uma área primeiro.", draw a rectangle, and the area line reads "Área: desenhada · 3,3 km²" with the red error still below. "Nenhum lugar encontrado." and a place-search error stay the same way; "Usar área visível" and a picked place already did so on `main` before #14. `setArea` should clear `#status` when it sets a new area. Lince notes this is safe for a running search: `runner.cancel("area")` writes "A área mudou…" after `setArea` returns. Out of scope: draw mode's `#draw-hint`, the search's own messages.
-- branch:
-- pr:
+- branch: `atlas/status-clear` (`846934a`) — base `main` (`24a15fd`)
+- pr: https://github.com/olavostauros/lead-finder/pull/20
 - review:
-- notes:
+- notes: `setArea` clears `#status` right after `runner.cancel("area")`, on the refused-area path too. Browser check (headless Chromium, CDP, 390x844, Nominatim and Overpass mocked) against builds of `main` and the branch: the stale "Escolha uma área primeiro." after a draw and "Nenhum lugar encontrado." after "Usar área visível" are cleared, and a running search's "A área mudou…" still shows. Not verified: a real phone.
 
 ## Reserve the status line's height so the map does not move mid-stroke
 - state: pr-open
