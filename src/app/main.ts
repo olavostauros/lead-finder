@@ -22,7 +22,6 @@ map.attributionControl.setPrefix(false);
 const areaLayer = L.layerGroup().addTo(map);
 const pinLayer = L.layerGroup().addTo(map);
 let area: Area | undefined;
-let searching: AbortController | undefined;
 
 const status = (msg: string, error = false) => {
   const el = $("status");
@@ -142,7 +141,7 @@ function phoneCell(lead: Lead): HTMLTableCellElement {
   return td;
 }
 
-function renderLeads(leads: Lead[]) {
+function renderLeads(leads: Lead[], partial: boolean) {
   const tbody = $("results").querySelector("tbody")!;
   tbody.replaceChildren();
   pinLayer.clearLayers();
@@ -167,9 +166,10 @@ function renderLeads(leads: Lead[]) {
       .addTo(pinLayer);
   }
   const withPhone = leads.filter((l) => l.phone).length;
-  $("count").textContent = leads.length
+  const count = leads.length
     ? `${leads.length.toLocaleString("pt-BR")} resultado(s), ${withPhone.toLocaleString("pt-BR")} com telefone.`
     : "Nenhum resultado nesta área.";
+  $("count").textContent = partial ? `${count} Lista parcial: reduza a área para ver todos os resultados.` : count;
 }
 
 $<HTMLDataListElement>("categories").append(
@@ -205,17 +205,25 @@ $("search-form").addEventListener("submit", async (e) => {
   if (!area) return status("Escolha uma área primeiro.", true);
   if (!term) return status("Informe o que procurar.", true);
 
-  searching?.abort();
-  const controller = new AbortController();
-  searching = controller;
-  status(`Buscando “${term}” no ${provider.name}…`);
+  // One search at a time: a second tap must not jump a back-off the server asked for.
+  const button = $<HTMLButtonElement>("search-form").querySelector("button")!;
+  if (button.disabled) return;
+  button.disabled = true;
+  let partial = false;
   try {
-    const leads = await provider.search(area, term, controller.signal);
-    if (controller.signal.aborted) return;
-    renderLeads(leads);
+    const leads = await provider.search(area, term, {
+      onEvent: (event) => {
+        if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
+        else if (event.kind === "waiting")
+          status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
+        else partial = true;
+      },
+    });
+    renderLeads(leads, partial);
     status("");
   } catch (err) {
-    if (controller.signal.aborted) return;
     status(err instanceof Error ? err.message : "Falha na busca.", true);
+  } finally {
+    button.disabled = false;
   }
 });

@@ -62,4 +62,13 @@ describe("NominatimGeocoder", () => {
     const geocoder = new NominatimGeocoder({ fetchFn, throttle: (f) => f() });
     await expect(geocoder.search("Centro")).rejects.toThrow(/busca de lugares/);
   });
+
+  it("gives up on a stalled connection with a pt-BR message", async () => {
+    const fetchFn = vi.fn(
+      (_url: string, init?: RequestInit) =>
+        new Promise<Response>((_, reject) => init?.signal?.addEventListener("abort", () => reject(init.signal?.reason))),
+    );
+    const geocoder = new NominatimGeocoder({ fetchFn, throttle: (f) => f(), timeoutMs: 10 });
+    await expect(geocoder.search("Pinheiros")).rejects.toThrow(/não respondeu/);
+  });
 });

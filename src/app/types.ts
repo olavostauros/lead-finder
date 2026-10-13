@@ -22,7 +22,17 @@ export interface Lead {
   sourceUrl: string;
 }
 
+export type SearchEvent =
+  | { kind: "requesting" }
+  | { kind: "waiting"; ms: number }
+  | { kind: "partial" };
+
+export interface SearchOptions {
+  signal?: AbortSignal;
+  onEvent?: (event: SearchEvent) => void;
+}
+
 export interface Provider {
   readonly name: string;
-  search(area: Area, query: string, signal?: AbortSignal): Promise<Lead[]>;
+  search(area: Area, query: string, opts?: SearchOptions): Promise<Lead[]>;
 }
