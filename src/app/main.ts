@@ -36,11 +36,11 @@ const status = (msg: string, error = false) => {
   el.classList.toggle("error", error);
 };
 
-// Draw mode shares #status; leaving it must bring back a running search's progress, not a blank line.
-let searchProgress = "";
-const searchStatus = (msg: string) => {
-  searchProgress = msg;
-  status(msg);
+// Draw mode has its own line: on #status it would hide a search's progress, and clearing it would erase the outcome.
+const drawHint = (msg?: string) => {
+  const el = $("draw-hint");
+  el.textContent = msg ?? "";
+  el.hidden = msg === undefined;
 };
 
 const toBBox = (b: L.LatLngBounds): BBox => ({
@@ -110,7 +110,7 @@ function startDrawing() {
     if (!end) return;
     clearPreview();
     if (end.kind === "tap") {
-      status(`Um toque não desenha. ${hint} Para sair, toque em “Cancelar desenho”.`);
+      drawHint(`Um toque não desenha. ${hint} Para sair, toque em “Cancelar desenho”.`);
       return;
     }
     stop();
@@ -119,7 +119,7 @@ function startDrawing() {
   const onCancel = (e: PointerEvent) => {
     if (!gesture.cancel(e.pointerId)) return;
     clearPreview();
-    status(hint);
+    drawHint(hint);
   };
   const onKey = (e: KeyboardEvent) => {
     if (e.key === "Escape") stop();
@@ -135,7 +135,7 @@ function startDrawing() {
     document.removeEventListener("keydown", onKey);
     container.classList.remove("drawing");
     button.textContent = "Desenhar área";
-    status(runner.busy ? searchProgress : "");
+    drawHint();
     stopDrawing = undefined;
   }
 
@@ -147,7 +147,7 @@ function startDrawing() {
   document.addEventListener("keydown", onKey);
   container.classList.add("drawing");
   button.textContent = "Cancelar desenho";
-  status(hint);
+  drawHint(hint);
   stopDrawing = stop;
 }
 
@@ -286,9 +286,9 @@ $("search-form").addEventListener("submit", async (e) => {
   cancel.hidden = false;
   try {
     const outcome = await runner.run(area, term, (event) => {
-      if (event.kind === "requesting") searchStatus(`Buscando “${term}” no ${provider.name}…`);
+      if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
       else if (event.kind === "waiting")
-        searchStatus(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
+        status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
     });
     if (outcome.kind === "done") {
       renderLeads(outcome.leads, outcome.partial);
