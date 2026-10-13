@@ -41,8 +41,9 @@ The roster is `roster.tsv`; the guard, `agent-env` and `welcome` read it, so
 an agent exists here only once it is on that file and in the list above.
 
 Builders (kind `builder` on `roster.tsv`) work on topic branches and open
-pull requests into `main`. Steward's branches stay local; the owner's seat
-pushes them. Lince pushes a branch only to record a review that has no PR.
+pull requests into `main`. Steward pushes nothing: its branches stay local
+until the owner has the seat push one, or discards it. Lince pushes a
+branch only to record a review that has no PR.
 None merges; the owner does, with a merge commit, never a squash or a rebase:
 the branch history is the record, and each agent keeps its branch clean
 enough to be read as one. None decides its own work: the owner files
@@ -239,8 +240,9 @@ says "three" while the table says four hides a grant; one that summarises the
 list too narrowly revokes one. Both fail silently. Link here instead.
 
 Until a row exists, each agent's standing permission is exactly Tier 1:
-branch, commit, push the branch, open the PR. Merging into `main` is the
-owner's.
+branch and commit. A builder also pushes its branch and opens the PR;
+steward and lince push only as "Who lives here" says. Merging into `main`
+is the owner's.
 
 ## Shared notes
 
@@ -289,7 +291,8 @@ its workspace is the lab's own: `~/agents/leads/`. The
 - **gh** — the owner's login, used as transport. No agent has a GitHub
   identity of its own; every push and PR goes through the owner's
   credentials and says so in the PR body. Whether the builders and judges (the
-  roster's `kind` column) get accounts of their own is the owner's to file in [[lab-backlog]].
+  roster's `kind` column) get accounts of their own is the owner's to file
+  in [[lab-backlog]].
   The steward is excluded from any such entry and from every channel:
   no account, no key, no mailbox, ever. It reads GitHub through the owner's
   login and writes nothing there.
