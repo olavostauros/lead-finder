@@ -108,7 +108,7 @@ describe("OverpassProvider", () => {
       .mockResolvedValueOnce(new Response("", { status: 429, headers: { "Retry-After": "3" } }))
       .mockResolvedValueOnce(new Response("", { status: 429 }))
       .mockResolvedValueOnce(ok());
-    const provider = new OverpassProvider({ fetchFn, sleep: async (ms) => void sleeps.push(ms) });
+    const provider = new OverpassProvider({ fetchFn, sleep: async (ms) => void sleeps.push(ms), now: () => 0 });
     const leads = await provider.search(area, "padaria");
     expect(leads).toHaveLength(2);
     expect(sleeps).toEqual([3000, 4000]);
@@ -221,5 +221,45 @@ describe("OverpassProvider", () => {
     );
     const provider = new OverpassProvider({ fetchFn, sleep: async () => {}, timeoutMs: 10 });
     await expect(provider.search(area, "padaria")).rejects.toThrow(/não respondeu/);
+  });
+
+  it("stops during a back-off when the search is cancelled, and keeps the deadline", async () => {
+    const fetchFn = vi.fn(async () => new Response("", { status: 429, headers: { "Retry-After": "30" } }));
+    const controller = new AbortController();
+    const sleep = vi.fn(
+      (_ms: number, signal?: AbortSignal) =>
+        new Promise<void>((_, reject) => {
+          if (signal?.aborted) reject(signal.reason);
+          signal?.addEventListener("abort", () => reject(signal.reason));
+        }),
+    );
+    const now = 1_000_000;
+    const provider = new OverpassProvider({ fetchFn, sleep, now: () => now });
+    const run = provider.search(area, "padaria", {
+      signal: controller.signal,
+      onEvent: (e) => {
+        if (e.kind === "waiting") controller.abort();
+      },
+    });
+    await expect(run).rejects.toMatchObject({ name: "AbortError" });
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+    expect(sleep.mock.calls[0]?.[1]).toBe(controller.signal);
+
+    const events: SearchEvent[] = [];
+    const next = new AbortController();
+    const again = provider.search(area, "padaria", { signal: next.signal, onEvent: (e) => events.push(e) });
+    next.abort();
+    await expect(again).rejects.toMatchObject({ name: "AbortError" });
+    expect(events[0]).toEqual({ kind: "waiting", ms: 30_000 });
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call the API when the search is cancelled before it starts", async () => {
+    const fetchFn = vi.fn(async () => ok());
+    const provider = new OverpassProvider({ fetchFn, sleep: async () => {} });
+    await expect(provider.search(area, "padaria", { signal: AbortSignal.abort() })).rejects.toMatchObject({
+      name: "AbortError",
+    });
+    expect(fetchFn).not.toHaveBeenCalled();
   });
 });

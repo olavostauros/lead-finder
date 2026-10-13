@@ -21,6 +21,8 @@ npm run build      # typecheck + static build into src/dist/
 - `app/area.ts` — area size and the cap (`MAX_AREA_KM2`).
 - `app/phone.ts` — Brazilian phone formatting and `wa.me` links for mobiles.
 - `app/categories.ts` — pt-BR categories mapped to OSM tags.
+- `app/search-run.ts` — one search at a time; cancelling it (Cancelar, or a new
+  area) aborts it and drops whatever it returns.
 - `app/main.ts` — the UI: map, area drawing, search, table and pins.
 
 The project lives under `src/` because `src/` is atlas's directory in the

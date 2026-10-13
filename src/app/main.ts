@@ -5,12 +5,14 @@ import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
 import { NominatimGeocoder, type Place } from "./nominatim";
 import { OverpassProvider } from "./overpass";
+import { SearchRunner } from "./search-run";
 import type { Area, BBox, Lead, Provider } from "./types";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 const provider: Provider = new OverpassProvider();
 const geocoder = new NominatimGeocoder();
+const runner = new SearchRunner(provider);
 
 const map = L.map("map").setView([-23.5505, -46.6333], 13);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -37,6 +39,7 @@ const toBBox = (b: L.LatLngBounds): BBox => ({
 });
 
 function setArea(bbox: BBox, label?: string): boolean {
+  runner.cancel("area");
   const check = checkArea(bbox);
   areaLayer.clearLayers();
   if (!check.ok) {
@@ -205,25 +208,27 @@ $("search-form").addEventListener("submit", async (e) => {
   if (!area) return status("Escolha uma área primeiro.", true);
   if (!term) return status("Informe o que procurar.", true);
 
-  // One search at a time: a second tap must not jump a back-off the server asked for.
-  const button = $<HTMLButtonElement>("search-form").querySelector("button")!;
-  if (button.disabled) return;
+  if (runner.busy) return;
+  const button = $<HTMLButtonElement>("search-form").querySelector<HTMLButtonElement>("button[type=submit]")!;
+  const cancel = $<HTMLButtonElement>("cancel");
   button.disabled = true;
-  let partial = false;
+  cancel.hidden = false;
   try {
-    const leads = await provider.search(area, term, {
-      onEvent: (event) => {
-        if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
-        else if (event.kind === "waiting")
-          status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
-        else partial = true;
-      },
+    const outcome = await runner.run(area, term, (event) => {
+      if (event.kind === "requesting") status(`Buscando “${term}” no ${provider.name}…`);
+      else if (event.kind === "waiting")
+        status(`Aguardando o servidor (${Math.ceil(event.ms / 1000).toLocaleString("pt-BR")} s)…`);
     });
-    renderLeads(leads, partial);
-    status("");
-  } catch (err) {
-    status(err instanceof Error ? err.message : "Falha na busca.", true);
+    if (outcome.kind === "done") {
+      renderLeads(outcome.leads, outcome.partial);
+      status("");
+    } else if (outcome.kind === "failed") status(outcome.message, true);
+    else if (outcome.reason === "area") status("A área mudou, então a busca anterior foi cancelada. Busque de novo.");
+    else status("Busca cancelada.");
   } finally {
     button.disabled = false;
+    cancel.hidden = true;
   }
 });
+
+$("cancel").addEventListener("click", () => runner.cancel("user"));
