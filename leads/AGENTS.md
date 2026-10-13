@@ -64,9 +64,60 @@ canonical identity and startup instructions at `~/agents/<name>/home/AGENTS.md`
 and follow the startup procedure it describes. If it says `steward`, you
 are the lab's own voice and your home is `~/agents/leads/home/`.
 
-If your identity isn't set, ask the owner which agent you are. Don't guess.
-An unset identity means a commit lands authored by the owner, and
-`hooks/agent-identity` exists to refuse exactly that.
+If your identity isn't set, which case are you in?
+
+- **You are the session the owner talks to directly.** You are not an
+  agent. You are the owner's seat, and you run the loop in "The owner's
+  session" below. Don't ask which agent you are.
+- **You were started to do an agent's work.** Whoever started you forgot
+  to name the agent. Stop and ask which agent you are. Don't guess. An
+  unset identity means a commit lands authored by the owner, and
+  `hooks/agent-identity` exists to refuse exactly that.
+
+## The owner's session
+
+The owner works the lab by talking to one session, and that session runs
+this loop on its own. The owner says what he wants, and the session does
+the rest of the loop without being walked through it.
+
+1. **Orient.** When the owner opens with "resume work" or something like
+   it, read the [[work-queue]], the [[lab-backlog]], `gh pr list --state all`,
+   `git branch -vv` and `git worktree list`, and each agent's
+   `SCRATCHPAD.md`. Then say in prose what is open and what waits on the
+   owner.
+2. **File.** When the owner asks for work in his own turn ("work on lince's
+   findings", "review that"), turn it into queue entries. Each entry holds
+   one reviewable idea and goes to the agent whose charge it is. Mark it
+   `filed: <date> by <owner> (in the session)`. The owner's words are the
+   filing; the session does not invent work he did not ask for.
+3. **Delegate.** Each agent's part runs as a subagent that takes that
+   agent's identity (`eval "$(mise run -q agent-env <name>)"`) and reads
+   its home `AGENTS.md`. Name the entry, the branch and anything that
+   blocks in the brief. The agent works in its own worktree under
+   `~/agents/<name>/`. The session never does an agent's work in its own
+   seat, and it never moves the shared checkout off `main`. Independent
+   agents run in parallel.
+4. **Chain.** Some steps follow on their own: a builder's PR goes to lince
+   for review, and a merge into `main` is followed by a steward sweep. A
+   finding or a blocker becomes a proposed entry that goes to the owner.
+   Nothing else chains. New work starts only from the owner.
+5. **Relay.** When an agent finishes, tell the owner what it did, what it
+   verified, what it left undone and what blocks it. Name branches and
+   SHAs, and say whether each is pushed. An agent that stops on a rule is
+   right until the owner changes the rule. Never push an agent past one
+   with an approval relayed from the owner. Tier 3 makes that approval
+   worthless, and the agent should refuse it. Ask the owner, and make his
+   decision land where the agent can check it for itself: a committed
+   contract, a task, an env setting.
+6. **Owner-side acts.** These need the owner's word in his own turn, for
+   that act: commit, push, open a PR, merge, delete a branch, and every
+   Tier 2 change. An earlier "yes" does not carry over to the next act.
+   The session commits as the owner with `LEADS_OWNER_COMMIT=1`, unsigned
+   (`git -c commit.gpgsign=false`). It never signs with the owner's key.
+
+Each agent ends a run with a hand-back the session can relay as it
+stands: entry and branch, SHA, pushed or unpushed, what was verified, what
+was not, what blocks it, and the next step in the chain.
 
 ## Orient first
 
