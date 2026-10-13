@@ -400,7 +400,10 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: 2026-10-13 atlas. The three-line breakpoint is `max-width: 22.4375em`, 359 px at the default 16 px: `22.5em` would have given 360 px three lines (lince's advice on #30). New `style.test.ts` reads `style.css` raw, which needs `test.css` to include it in `vite.config.ts`: vitest empties CSS imports, `?raw` too. Measured with the browser default font size raised by CDP `Page.setFontSizes` (16, 20, 21, 24 px), not the root `font-size`, which an `em` media query does not see (lince on #30); builds of `main` and the branch, the four longest errors injected: at 16 px the reserve and map are identical; at 20 to 24 px `main` moved the map 21.88 to 26.25 px at 360 to 480 px, the branch 0. Left as is: at 24 px and 320 to 340 px the longest error wraps to four lines where three are reserved, on `main` too. Not checked on a real phone or with OS font scaling.
 
 ## Stop the browser asking for /favicon.ico at the origin root
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
 - scope: lince's nit on PR #15, the Pages deploy (https://github.com/olavostauros/lead-finder/pull/15#issuecomment-6145628481). The app is served under `/lead-finder/` and declares no icon, so every load asks for `/favicon.ico` at the origin root and gets a 404. Declare an icon in `src/index.html` that the build serves under the app's own base path, with no new runtime dependency. Out of scope: an app manifest, touch icons beyond what one `<link rel="icon">` needs.
+- branch: `atlas/favicon` (`0408959`) — base `main` (`4f8f0e4`)
+- pr: https://github.com/olavostauros/lead-finder/pull/33
+- notes: 2026-10-13 atlas. `src/app/favicon.svg`, a map pin, linked from `index.html` as `./app/favicon.svg`; Vite emits it as `./assets/favicon-<hash>.svg`, so it is served under the base path. The `href` must stay relative: `index-html.test.ts` checks it. Built `dist/` of `main` and the branch, each served under `/lead-finder/` on a fresh origin, headless Chromium, server log: `main` asked `GET /favicon.ico` (404); the branch fetched only its own icon (200), no root request. Not checked on Pages, Firefox or Safari; Safari before 26 ignores SVG icons and may still ask the root.
