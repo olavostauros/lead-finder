@@ -38,8 +38,16 @@ const toBBox = (b: L.LatLngBounds): BBox => ({
   east: b.getEast(),
 });
 
+function clearResults() {
+  $("results").querySelector("tbody")!.replaceChildren();
+  pinLayer.clearLayers();
+  $("count").textContent = "";
+}
+
 function setArea(bbox: BBox, label?: string): boolean {
   runner.cancel("area");
+  // Results on screen belong to the area being left; they must not sit under the new label.
+  clearResults();
   const check = checkArea(bbox);
   areaLayer.clearLayers();
   if (!check.ok) {
@@ -145,9 +153,8 @@ function phoneCell(lead: Lead): HTMLTableCellElement {
 }
 
 function renderLeads(leads: Lead[], partial: boolean) {
+  clearResults();
   const tbody = $("results").querySelector("tbody")!;
-  tbody.replaceChildren();
-  pinLayer.clearLayers();
   for (const lead of leads) {
     const tr = document.createElement("tr");
     const name = document.createElement("td");
@@ -226,8 +233,10 @@ $("search-form").addEventListener("submit", async (e) => {
     else if (outcome.reason === "area") status("A área mudou, então a busca anterior foi cancelada. Busque de novo.");
     else status("Busca cancelada.");
   } finally {
+    const hadFocus = document.activeElement === cancel;
     button.disabled = false;
     cancel.hidden = true;
+    if (hadFocus) button.focus();
   }
 });
 

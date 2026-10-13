@@ -77,6 +77,19 @@ describe("SearchRunner", () => {
     await expect(run).resolves.toEqual({ kind: "cancelled", reason: "area" });
   });
 
+  it("stops forwarding provider events once cancelled", async () => {
+    const provider = hangingUntilAbort();
+    const runner = new SearchRunner(provider);
+    const events: string[] = [];
+    const run = runner.run(pinheiros, "padaria", (event) => events.push(event.kind));
+    provider.opts?.onEvent?.({ kind: "requesting" });
+    runner.cancel("user");
+    provider.opts?.onEvent?.({ kind: "waiting", ms: 1000 });
+    provider.opts?.onEvent?.({ kind: "partial" });
+    await run;
+    expect(events).toEqual(["requesting"]);
+  });
+
   it("reports a provider error in pt-BR", async () => {
     const runner = new SearchRunner({
       name: "fake",

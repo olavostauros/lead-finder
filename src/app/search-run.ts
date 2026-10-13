@@ -33,6 +33,7 @@ export class SearchRunner {
       const leads = await this.provider.search(area, term, {
         signal: running.controller.signal,
         onEvent: (event) => {
+          if (running.reason) return;
           if (event.kind === "partial") partial = true;
           onEvent?.(event);
         },
