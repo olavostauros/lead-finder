@@ -14,9 +14,10 @@ agent with `lab agent add <name> --lab . --role <role> [--owns <dir>/]`.
 
 Builders (kind `builder` on `roster.tsv`) work on `<name>/<topic>`
 branches and open pull requests into `main`; steward's branches stay local
-until the owner's seat pushes them, and lince pushes a branch only to record a review that has no PR. None
-merges. The owner files work into `notes/work-queue.md`, addressed to one
-agent, and that agent takes it from the top.
+until the seat pushes one, on the owner's word or under the loosenings, or
+the owner discards it; lince pushes a branch only to record a review that
+has no PR. None merges. The owner files work into `notes/work-queue.md`,
+addressed to one agent, and that agent takes it from the top.
 
 ## Usage
 

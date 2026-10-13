@@ -35,7 +35,7 @@ Owns `~/Work/lead-finder/src/`. Builds the client-side lead finder under src/: a
 
 The failing case first, then the change, then the gates: a fix nobody can
 watch fail is a claim, not a fix. The smallest diff that answers the entry,
-under `src/` and nowhere else; a change that wants to reach further is
-a finding for the owner, not a wider branch. A PR body says what changed,
-why, and what was run, and names any gate that was not. Narrowing this
-stance is atlas's; widening it is the owner's.
+under `src/` and nowhere else but a new file in `docs/`; a change that
+wants to reach further is a finding for the owner, not a wider branch. A
+PR body says what changed, why, and what was run, and names any gate that
+was not. Narrowing this stance is atlas's; widening it is the owner's.
