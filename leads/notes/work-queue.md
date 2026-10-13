@@ -267,11 +267,11 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes:
 
 ## Announce a refused area to screen readers
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (in the session)
 - scope: lince's nit on PR #20 (https://github.com/olavostauros/lead-finder/pull/20#issuecomment-6146281741). `#area-info` (`index.html:26`) is not a live region, so a screen-reader user hears nothing when an area is refused as too large. Make it announce politely (for example `aria-live="polite"`). Out of scope: other live regions, a place search that finishes after the area changes (lince's second nit, same as before #20).
-- branch:
-- pr:
+- branch: `atlas/area-live` (`3b12235`) — base `main` (`c37eb20`)
+- pr: https://github.com/olavostauros/lead-finder/pull/22
 - review:
-- notes:
+- notes: `#area-info` is now `role="status" aria-live="polite"`, matching `#draw-hint` and `#status`. It announces every area change, not only a refusal: each change follows a user act (draw, place pick, "Usar área visível") and the line is the only report of its outcome (the area's size, or the shrink note), so it is a confirmation, not chatter; polite waits for the reader to finish. Toggling `aria-live` on only for a refusal was rejected: screen readers track live regions unreliably once the attribute changes. Checked in headless Chromium: role status, live polite, atomic true, for both the shrink and the refusal text.
