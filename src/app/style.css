@@ -110,6 +110,13 @@ button:disabled {
   min-height: 1.25em;
 }
 
+/* Progress is cleared when the search ends, often mid-stroke: wrapped to two lines, it would drop one and move the map. */
+#status.progress {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .map {
   height: 55vh;
   min-height: 280px;
