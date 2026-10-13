@@ -18,7 +18,9 @@ npm run build      # typecheck + static build into src/dist/
 - `app/overpass.ts` — OpenStreetMap provider (Overpass). Bounded area, query
   timeout, result cap, back-off on 429/504.
 - `app/nominatim.ts` — place search, throttled to one request per second app-wide.
-- `app/area.ts` — area size and the cap (`MAX_AREA_KM2`).
+- `app/area.ts` — area size, the cap (`MAX_AREA_KM2`), and `fitVisible`, which
+  shrinks a view up to `MAX_FIT_KM2` to the largest centred box under the cap
+  (`fitUnderCap`) and refuses a larger one, whose box would be too small to see.
 - `app/phone.ts` — Brazilian phone formatting and `wa.me` links for mobiles.
 - `app/categories.ts` — pt-BR categories mapped to OSM tags.
 - `app/draw.ts` — the draw-mode gesture: one pointer, tap or rectangle, the

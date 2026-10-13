@@ -1,7 +1,7 @@
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./style.css";
-import { checkArea, formatKm2, MAX_AREA_KM2 } from "./area";
+import { areaKm2, checkArea, fitVisible, formatKm2, MAX_AREA_KM2 } from "./area";
 import { CATEGORIES } from "./categories";
 import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
@@ -21,6 +21,9 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: '© <a href="https://www.openstreetmap.org/copyright">colaboradores do OpenStreetMap</a>',
 }).addTo(map);
 map.attributionControl.setPrefix(false);
+
+// Clears the zoom control and the attribution, which sit in the map's corners.
+const FIT_PADDING_PX = 48;
 
 const areaLayer = L.layerGroup().addTo(map);
 const pinLayer = L.layerGroup().addTo(map);
@@ -53,7 +56,7 @@ function clearResults() {
   $("count").textContent = "";
 }
 
-function setArea(bbox: BBox, label?: string): boolean {
+function setArea(bbox: BBox, label?: string, note?: string): boolean {
   runner.cancel("area");
   // Results on screen belong to the area being left; they must not sit under the new label.
   clearResults();
@@ -72,7 +75,7 @@ function setArea(bbox: BBox, label?: string): boolean {
     ],
     { color: "#2563eb", weight: 2, fillOpacity: 0.05, interactive: false },
   ).addTo(areaLayer);
-  $("area-info").textContent = `Área: ${label ? `${label} · ` : ""}${formatKm2(check.km2)}`;
+  $("area-info").textContent = `Área: ${label ? `${label} · ` : ""}${formatKm2(check.km2)}${note ? `. ${note}` : ""}`;
   return true;
 }
 
@@ -235,7 +238,23 @@ $<HTMLDataListElement>("categories").append(
 $("draw").addEventListener("click", () => (stopDrawing ? stopDrawing() : startDrawing()));
 $("use-view").addEventListener("click", () => {
   stopDrawing?.();
-  setArea(toBBox(map.getBounds()), "visível no mapa");
+  const view = toBBox(map.getBounds());
+  const fitted = fitVisible(view);
+  if (!fitted || fitted === view) return void setArea(view, "visível no mapa");
+  const fittedOk = setArea(
+    fitted,
+    "centro do mapa",
+    `A área que estava visível tinha ${formatKm2(areaKm2(view))}, acima do limite de ${formatKm2(MAX_AREA_KM2)}, então a busca vale para o retângulo azul. Para outra área, aproxime o mapa ou desenhe.`,
+  );
+  // A fitted box can fill the map to its edge, where it reads as the map's border and the controls cover its corners.
+  if (fittedOk)
+    map.fitBounds(
+      [
+        [fitted.south, fitted.west],
+        [fitted.north, fitted.east],
+      ],
+      { padding: [FIT_PADDING_PX, FIT_PADDING_PX], maxZoom: map.getZoom() },
+    );
 });
 
 $("place-form").addEventListener("submit", async (e) => {
