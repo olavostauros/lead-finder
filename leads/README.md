@@ -61,9 +61,10 @@ When they are signed, expect three things:
   it; both are machine setup, outside the lab.
 
 To stop signing for this repository alone: `git -C ~/Work/lead-finder config
-commit.gpgsign false`, in the owner's own turn. Agents don't need it: `agent-env` already
-turns signing off. An agent's commit that asks for a passphrase was made
-without `agent-env`; it is reported, not worked around.
+commit.gpgsign false`, in the owner's own turn. Agents don't need it:
+`agent-env` already turns signing off. An agent's commit that asks for a
+passphrase, or fails to sign, was made without `agent-env`; it is
+reported, not worked around.
 
 ## What is not here yet
 
