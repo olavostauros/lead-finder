@@ -391,10 +391,13 @@ asked for in the session). Nobody works it; it holds the PR's facts:
 - notes: `b1a4556` is steward's, unsigned; the PR body says the owner's seat pushed it under loosening row 1. Lince applied E and G by machine to copies of `main`'s files: each hunk matches once and wraps at 75 columns or less; row 1, the seat paragraph, the README and `notes/atlas.md` are unchanged on the branch. It found that H closes its #27 finding and called H fit to apply as written. Three low findings on H, all fixed in the entry on `steward/sweep-26-28`: 1, "what it widens" missed two narrowings (a builder PR carrying an owner-authored commit, and agents' fact fixes in identity notes); 2, a commit by someone not on `roster.tsv` (a stranger's PR to `.github/`) matches no tier, a gap that exists today; 3, #24's and #27's PR bodies also say "under loosening row 1", not #21's alone.
 
 ## Size the status line's three-line breakpoint in em
-- state: queued
+- state: pr-open
 - agent: atlas
 - filed: 2026-10-13 by olavostauros (under loosening row 1)
 - scope: lince's low finding on PR #26 (https://github.com/olavostauros/lead-finder/pull/26#issuecomment-6146658793). `#status` reserves its height in `em` but switches from two lines to three at `max-width: 359px` (`src/app/style.css:115` on `c0570d5`), so with text-only scaling at 130% the longest search error wraps to three lines at 360, 375 and 390 px where two are reserved, and the map still moves 22.75 px. Make the breakpoint follow the text size, for example `max-width: 22.5em`, and keep the CSS comment at `:108` true. Out of scope: the desktop layout, `#draw-hint`, the one-line progress rule.
+- branch: `atlas/status-em` (`65fbb75`) — base `main` (`4f8f0e4`)
+- pr: https://github.com/olavostauros/lead-finder/pull/32
+- notes: 2026-10-13 atlas. The three-line breakpoint is `max-width: 22.4375em`, 359 px at the default 16 px: `22.5em` would have given 360 px three lines (lince's advice on #30). New `style.test.ts` reads `style.css` raw, which needs `test.css` to include it in `vite.config.ts`: vitest empties CSS imports, `?raw` too. Measured with the browser default font size raised by CDP `Page.setFontSizes` (16, 20, 21, 24 px), not the root `font-size`, which an `em` media query does not see (lince on #30); builds of `main` and the branch, the four longest errors injected: at 16 px the reserve and map are identical; at 20 to 24 px `main` moved the map 21.88 to 26.25 px at 360 to 480 px, the branch 0. Left as is: at 24 px and 320 to 340 px the longest error wraps to four lines where three are reserved, on `main` too. Not checked on a real phone or with OS font scaling.
 
 ## Stop the browser asking for /favicon.ico at the origin root
 - state: queued
