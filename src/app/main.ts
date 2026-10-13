@@ -7,6 +7,7 @@ import { RectGesture, suspend, type Point } from "./draw";
 import { NominatimGeocoder, type Place } from "./nominatim";
 import { OverpassProvider } from "./overpass";
 import { SearchRunner } from "./search-run";
+import { showStatus } from "./status-line";
 import type { Area, BBox, Lead, Provider } from "./types";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -30,12 +31,7 @@ const pinLayer = L.layerGroup().addTo(map);
 let area: Area | undefined;
 let stopDrawing: (() => void) | undefined;
 
-const status = (msg: string, tone?: "error" | "progress") => {
-  const el = $("status");
-  el.textContent = msg;
-  el.classList.toggle("error", tone === "error");
-  el.classList.toggle("progress", tone === "progress");
-};
+const status = (msg: string, tone?: "error" | "progress") => showStatus($("status"), msg, tone);
 
 // Draw mode has its own line: on #status it would hide a search's progress, and clearing it would erase the outcome.
 const drawHint = (msg?: string) => {
